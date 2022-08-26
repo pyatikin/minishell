@@ -10,7 +10,7 @@
 #define MYSHELL "Myshell > "
 
 
-int	input_loop(t_command *args)
+int	input_loop(t_command *args, t_env_var *vars)
 {
 	while (1)
 	{
@@ -28,17 +28,30 @@ int	input_loop(t_command *args)
 		//write(1, args->cmd, sizeof(args->cmd));
 		
 		args = parsbody(args->cmd);
-		printf("|%s|\n", args->cmd);
+		//printf("|%s|\n", args->cmd);
+		start_path(args, vars);
 	}
+}
+int preprocess(t_env_var *vars, char **env)
+{
+	
+	vars->env = env;
+	vars->stdin_fd = dup(STDIN_FILENO);
+	vars->stdout_fd = dup(STDOUT_FILENO);
+	//printf("stdin = %d,\tstdout = %d", vars->stdin_fd, vars->stdout_fd);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_command	args;
 	int			res;
-	
-	set_signals();
+	t_env_var vars;
 
+
+	set_signals();
+	preprocess(&vars, env);
+	
+	//start_path(&args, env, &vars);
 	//sig_t		h_fun;
 	//h_fun = &n_handler;
 	//signal(SIGQUIT, h_fun);
@@ -46,7 +59,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	if (argc == 1)
 	{
-		input_loop(&args);
+		input_loop(&args, &vars);
 		//close(args.fd);
 		//free(args.res);
 		//args.res = get_env_value("LES", args.env);

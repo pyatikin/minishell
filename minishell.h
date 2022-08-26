@@ -21,8 +21,10 @@ typedef struct s_simpleCommand
 	char	**arguments;
 	char	*out_file;
 	int		out_file_type;
+	int		out_fd;
 	char	*in_file;
 	int		in_file_type;
+	int		in_fd;
 }	t_simpleCommand;
 
 typedef struct s_command
@@ -38,6 +40,8 @@ typedef struct s_env_var
 {
 	char	**env;
 	char	**path;
+	int		stdin_fd;
+	int		stdout_fd;
 }	t_env_var;
 
 void set_signals();
@@ -47,5 +51,6 @@ void	print_err(char *main, char	*word, char ch);
 char	*ft_chng_line(char **cmd);
 t_command	*parsbody(char *pipe_line);
 size_t	ft_strlen(const char *str);
+int	start_path(t_command *args, t_env_var *vars);
 
 #endif

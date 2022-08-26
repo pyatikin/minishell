@@ -2,10 +2,13 @@
 # include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "minishell.h"
 #define CLOSE "\001\033[0m\002"                 // Закрыть все свойства
 #define BLOD  "\001\033[1m\002"                 // Подчеркнуть, жирным шрифтом, выделить
-#define BEGIN(x,y) "\001\033["#x";"#y"m\002"    // x: background, y: foreground
+//#define BEGIN(x,y) "\001\033["#x";"#y"m\002"    // x: background, y: foreground
 #define MYSHELL "Myshell > "
 
 int	find_env(char **env, char *s)
@@ -49,7 +52,7 @@ void make_path_vector(char* path, char** path_vector, int l)
 		if(*(--path) != ':')
 			path++;
 		path = path - i;
-		printf("%d)%s\n\n",i, path);
+		//printf("%d)%s\n\n",i, path);
 		(path_vector)[--l] = ft_substr(path, 0, i);
 		//printf("%s", path_vector[l]);
 		tmp = path;
@@ -78,53 +81,132 @@ char *check_exec(char *dir, char *cmd)
 	return(NULL);
 }
 
-int	loop(t_command *args, t_env_var *vars, char **env)
+int do_redirections(t_command *args, int i, t_env_var *vars)
 {
-	while (1)
+	int	in;
+	int	out;
+	//TODO IN < and << 
+	if (args->simple_commands[i]->in_file_type == 1)
+		args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
+	else if (args->simple_commands[i]->in_file_type == 2)
+		args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
+	else 
+		args->simple_commands[i]->in_fd = vars->stdin_fd;
+	if	(args->simple_commands[i]->out_file_type == 1)
+		args->simple_commands[i]->out_fd = open(args->simple_commands[i]->out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (args->simple_commands[i]->out_file_type == 2)
+		args->simple_commands[i]->out_fd = open(args->simple_commands[i]->out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		args->simple_commands[i]->out_fd = vars->stdout_fd;
+	if(dup2(args->simple_commands[i]->in_fd, STDIN_FILENO) == -1 ||
+		dup2(args->simple_commands[i]->out_fd, STDOUT_FILENO) == -1)
+		return (1);
+	//printf("before: fd_in = %d, fd_out = %d", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
+	if (args->simple_commands[i]->in_fd != vars->stdin_fd)
+		close(args->simple_commands[i]->in_fd);
+	if (args->simple_commands[i]->out_fd != vars->stdout_fd)
+		close(args->simple_commands[i]->out_fd);
+	return (0);
+}
+int execute_command(char	*tmp, char **arg, char**env)
+{
+	int	pid;
+	int	status;
+
+	pid = fork();
+	if (pid == 0)
+		execve(tmp, arg, env);
+	else if (pid < 0)
+		return (-1);
+	waitpid(pid, &status, 0);
+}
+int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args)
+{
+	char		*com;
+	struct stat	sb;
+	char		*tmp;
+	int 		k;
+
+	k = 0;
+	com = cur_command->arguments[0];
+	if (com == "echo\0" || com == "cd\0" || com == "pdw\0" || com == "export\0" || com == "unset\0" || com == "env\0" || com == "exit\0") //TODO исправить на strcmp
+		return (0);
+	while(vars->path[k])
 	{
-		args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
-		if (!args->cmd)
-		{
-			printf("exit\n");
-			return (0);
+		if(tmp = check_exec(vars->path[k], cur_command->arguments[0])){
+			//return (3); //remake
+			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
+			execute_command(tmp, cur_command->arguments, vars->env);
+			return(0);
 		}
-		if (ft_strlen(args->cmd))
-			add_history(args->cmd);
-		args->cmd = ft_chng_line(&(args->cmd));
-		if (check_cmd((args->cmd)) != 0)
-			continue;
-		//write(1, args->cmd, sizeof(args->cmd));
-		
-		args = parsbody(args->cmd);
-		printf("|%s|\n", args->cmd);
+		k++;
+	}
+	printf("%s: command not found\n", com);
+	return (1);
+}
+
+int back_redirections(t_command *args, int i, t_env_var *env)
+{
+	dup2(env->stdin_fd, STDIN_FILENO);
+	dup2(env->stdout_fd, STDOUT_FILENO);
+	return (0);
+}
+int	exec_loop(t_command *args, t_env_var *vars)
+{
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_simple_commands)
+	{
+		do_redirections(args, i, vars);
+		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
+		check_command(args->simple_commands[i], vars, args);
+		back_redirections(args, i, vars);
+		//args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
+		//if (!args->cmd)
+		//{
+		//	printf("exit\n");
+		//	return (0);
+		//}
+		//if (ft_strlen(args->cmd))
+		//	add_history(args->cmd);
+		//args->cmd = ft_chng_line(&(args->cmd));
+		//if (check_cmd((args->cmd)) != 0)
+		//	continue;
+		////write(1, args->cmd, sizeof(args->cmd));
+		//
+		//args = parsbody(args->cmd);
+		//printf("|%s|\n", args->cmd);
 
 
 
 		///////////////////| exec |/////////////////////////
-		int k = 0;
-		char *tmp;
-		while(vars->path[k])
-		{
-			if(tmp = check_exec(vars->path[k], args->simple_commands[0]->arguments[0]))
-			
-				execve(tmp, args->simple_commands[0]->arguments, env);
-
-			k++;
-		}
+		//int k = 0;
+		//char *tmp;
+		//while(vars->path[k])
+		//{
+		//	if(tmp = check_exec(vars->path[k], args->simple_commands[0]->arguments[0]))
+//		//	
+//		//		execve(tmp, args->simple_commands[0]->arguments, vars->env);
+//
+		//	k++;
+		//}
+		i++;
 	}
 }
-//int	main(int argc, char **argv, char **env)
-//{
-//	t_command	args;
-//	t_env_var vars;
-//	
-//	printf("%s\n", (env[find_env(env, "PATH")]));
-//	vars.path = malloc(sizeof(char*)*count_colomns(env[find_env(env, "PATH")]));
-//	make_path_vector(env[find_env(env, "PATH")]+5, vars.path, count_colomns(env[find_env(env, "PATH")]));
-//	int l = count_colomns(env[find_env(env, "PATH")]);
-//	while(l--)
-//	{
-//		printf("%d)\t%s\n",l, vars.path[l]);
-//	}
-//	loop(&args, &vars, env);
-//}
+int	start_path(t_command *args, t_env_var *vars)
+{
+	
+	
+	//printf("%s\n", (vars->env[find_env(vars->env, "PATH")]));
+	vars->path = malloc(sizeof(char*)*(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
+	vars->path[count_colomns(vars->env[find_env(vars->env, "PATH")])] = NULL;
+	make_path_vector(vars->env[find_env(vars->env, "PATH")]+5, vars->path, count_colomns(vars->env[find_env(vars->env, "PATH")]));
+	//int l = count_colomns(vars->env[find_env(vars->env, "PATH")]);
+	//while(l--)
+	//{
+	//	printf("%d)\t%s\n",l, vars->path[l]);
+	//}
+	exec_loop(args, vars);
+	//printf("NUM = %d", args->number_of_simple_commands);
+}
