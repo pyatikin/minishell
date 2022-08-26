@@ -1,18 +1,20 @@
 #include "minishell.h"
 #include <stdio.h>
+#include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #define CLOSE "\001\033[0m\002"                 // Закрыть все свойства
 #define BLOD  "\001\033[1m\002"                 // Подчеркнуть, жирным шрифтом, выделить
 #define BEGIN(x,y) "\001\033["#x";"#y"m\002"    // x: background, y: foreground
+#define MYSHELL "Myshell > "
 
 
 int	input_loop(t_command *args)
 {
 	while (1)
 	{
-		args->cmd = readline(BEGIN(30, 36)"Myshell >"CLOSE);
+		args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
 		if (!args->cmd)
 		{
 			printf("exit\n");
@@ -34,6 +36,12 @@ int	main(int argc, char **argv, char **env)
 {
 	t_command	args;
 	int			res;
+	
+	set_signals();
+
+	//sig_t		h_fun;
+	//h_fun = &n_handler;
+	//signal(SIGQUIT, h_fun);
 
 	(void)argv;
 	if (argc == 1)

@@ -54,6 +54,7 @@ int	check_command(t_simpleCommand *cur_command)
 	}
 	else
 		printf("%s: command not found\n", com);
+	return (1);
 }
 
 void	lexer(t_command *command)
@@ -69,34 +70,38 @@ void	lexer(t_command *command)
 	}
 }
 
+
+
+//////////////////////////////!
 //int main(int argc, char **argv, char *envp[])
 //{
-//	t_command	*first;
-//	t_simpleCommand	cur;
-//	t_simpleCommand	cur2;
-//
-//	first = malloc(sizeof(t_command));
-//	first->number_of_simple_commands = 2;
-//	first->simple_commands = malloc(sizeof(t_simpleCommand) * first->number_of_simple_commands);
-//	cur.number_of_arguments = 2;
-//	cur.arguments = malloc(sizeof(char*) * cur.number_of_arguments);
-//	cur.arguments[0] = "echo\0";
-//	cur.arguments[1] = "me\0";
-//	first->simple_commands[0] = &cur;
-//
-//	cur2.number_of_arguments = 2;
-//	cur2.arguments = malloc(sizeof(char*) * cur.number_of_arguments);
-//	cur2.arguments[0] = "ls\0";
-//	cur2.arguments[1] = "-la\0";
-//	first->simple_commands[1] = &cur2;
-//
-//	//lexer(first);
-//	//printf("%s \n", get_directory("qwe/"));
-//
+////	t_command	*first;
+////	t_simpleCommand	cur;
+////	t_simpleCommand	cur2;
+////
+////	first = malloc(sizeof(t_command));
+////	first->number_of_simple_commands = 2;
+////	first->simple_commands = malloc(sizeof(t_simpleCommand) * first->number_of_simple_commands);
+////	cur.number_of_arguments = 2;
+////	cur.arguments = malloc(sizeof(char*) * cur.number_of_arguments);
+////	cur.arguments[0] = "echo\0";
+////	cur.arguments[1] = "me\0";
+////	first->simple_commands[0] = &cur;
+////
+////	cur2.number_of_arguments = 2;
+////	cur2.arguments = malloc(sizeof(char*) * cur.number_of_arguments);
+////	cur2.arguments[0] = "ls\0";
+////	cur2.arguments[1] = "-la\0";
+////	first->simple_commands[1] = &cur2;
+////
+////	//lexer(first);
+////	//printf("%s \n", get_directory("qwe/"));
+////
 //	int ret;
 //	int i = 0;
 //	char *cmd[] = {"ls","-l", (char *)0 };
 //	char **env;
+//	struct stat	sb;
 //	env = envp;
 //	//while(env[i])
 //	//{
@@ -104,27 +109,35 @@ void	lexer(t_command *command)
 //	//	i++;
 //	//}
 //	//printf("\n");
-//	//ret = execve ("/bin/ls", cmd, envp);
+//	//if (access("/bin/lsa", F_OK) == 0)
+//	{
+//		if (stat("/bin/lsa", &sb) < 0 && ((sb.st_mode & S_IFMT) != S_IFREG || (sb.st_mode & S_IFMT) != S_IFDIR))
+//		{
+//			printf("%s: No such file or directory\n", "/bin/lsa");
+//			return (1);
+//		}
+//		ret = execve ("/bin/ls", cmd, envp);
+//	}
 //
-//	 while (1)
-//    {
-//        char * str = readline(BEGIN(49, 34)"Myshell $ "CLOSE);
-//        free(str);
-//    }
+////	 while (1)
+////    {
+////        char * str = readline(BEGIN(49, 34)"Myshell $ "CLOSE);
+////        free(str);
+////    }
+////
+////	
+////	
+////
+////}
 //
-//	
-//	
+//// #include <stdlib.h>
+//// #include <readline/readline.h>
 //
-//}
-
-// #include <stdlib.h>
-// #include <readline/readline.h>
-
-// int main(void)
-// {
-//     while (1)
-//     {
-//         char * str = readline("Myshell $ ");
-//         free(str);
-//     }
+//// int main(void)
+//// {
+////     while (1)
+////     {
+////         char * str = readline("Myshell $ ");
+////         free(str);
+////     }
 // }

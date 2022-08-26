@@ -1,0 +1,1 @@
+gcc ft_strlen.c ft_substr.c ft_strncmp.c spaces.c check_cmd.c print_error.c ft_calloc.c miniparser.c ft_strlcpy.c ft_memset.c ft_strcmp.c signals.c ft_strjoin.c ft_strdup.c  test_env.c -lreadline
