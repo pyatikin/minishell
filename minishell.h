@@ -25,6 +25,7 @@ typedef struct s_simpleCommand
 	char	*in_file;
 	int		in_file_type;
 	int		in_fd;
+	int		db_fd[2];
 }	t_simpleCommand;
 
 typedef struct s_command

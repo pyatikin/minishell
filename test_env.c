@@ -65,8 +65,11 @@ char *check_exec(char *dir, char *cmd)
 	char 		*all;
 	struct stat	sb;
 
-	if(dir[ft_strlen(dir)] != '/')
-		dir = ft_strjoin(dir, "/\0");
+	if(dir)
+	{
+		if(dir[ft_strlen(dir)] != '/')
+			dir = ft_strjoin(dir, "/\0");
+	}
 	all = ft_strjoin(dir, cmd);
 	if (access(all, F_OK) == 0)
 	{
@@ -79,6 +82,29 @@ char *check_exec(char *dir, char *cmd)
 		return (all);
 	}
 	return(NULL);
+}
+int do_db_redirections(t_command *args, int i, t_env_var *vars)
+{
+	//printf("NUM = %d", args->number_of_simple_commands);
+	if(!(args->simple_commands[i]->out_file == NULL && args->number_of_simple_commands > i + 1  && args->simple_commands[i+1]->in_file == NULL))
+		return (1);
+	//write(1, "1\n", 2);
+	pipe(args->simple_commands[i]->db_fd);
+	//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
+	dup2(args->simple_commands[i]->db_fd[1], STDOUT_FILENO);
+	close(args->simple_commands[i]->db_fd[1]);
+	return (0);	
+}
+int get_db_redirections(t_command *args, int i, t_env_var *vars)
+{
+	
+	if (i > 0 && args->simple_commands[i-1]->out_file == NULL && args->simple_commands[i]->in_file == NULL)
+	{
+		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
+		dup2(args->simple_commands[i-1]->db_fd[0], STDIN_FILENO);
+		close(args->simple_commands[i-1]->db_fd[0]);
+	}
+	return(0);
 }
 
 int do_redirections(t_command *args, int i, t_env_var *vars)
@@ -141,6 +167,12 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 		}
 		k++;
 	}
+	if(tmp = check_exec(NULL, cur_command->arguments[0])){
+			//return (3); //remake
+			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
+			execute_command(tmp, cur_command->arguments, vars->env);
+			return(0);
+		}
 	printf("%s: command not found\n", com);
 	return (1);
 }
@@ -158,7 +190,13 @@ int	exec_loop(t_command *args, t_env_var *vars)
 	i = 0;
 	while (i < args->number_of_simple_commands)
 	{
+		
 		do_redirections(args, i, vars);
+		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
+		//printf("QQQQQQQQQ = %p", args->simple_commands[i+1]);
+		
+		do_db_redirections(args, i, vars);
+		get_db_redirections(args, i, vars);
 		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
 		check_command(args->simple_commands[i], vars, args);
 		back_redirections(args, i, vars);
