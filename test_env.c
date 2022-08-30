@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 #include "minishell.h"
 #define CLOSE "\001\033[0m\002"                 // Закрыть все свойства
 #define BLOD  "\001\033[1m\002"                 // Подчеркнуть, жирным шрифтом, выделить
@@ -134,17 +135,36 @@ int do_redirections(t_command *args, int i, t_env_var *vars)
 		close(args->simple_commands[i]->out_fd);
 	return (0);
 }
-int execute_command(char	*tmp, char **arg, char**env)
+int execute_command(char	*tmp, char **arg, t_env_var *vars)
 {
-	int	pid;
+	pid_t	pid;
 	int	status;
 
 	pid = fork();
 	if (pid == 0)
-		execve(tmp, arg, env);
+		vars->status = execve(tmp, arg, vars->env);
 	else if (pid < 0)
 		return (-1);
 	waitpid(pid, &status, 0);
+	printf("STATUS = %d", errno);
+	perror("execve");
+}
+int build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_command)
+{
+	if(ft_strcmp(com, "echo\0") == 0)
+		return (0);
+	else if(ft_strcmp(com, "cd\0") == 0)
+		return (0);
+	else if(ft_strcmp(com, "pwd\0") == 0)
+		return (0);
+	else if(ft_strcmp(com, "export\0") == 0)
+		return (ft_export(vars, args, cur_command));
+	else if(ft_strcmp(com, "unset\0") == 0)
+		return (0);
+	else if(ft_strcmp(com, "env\0") == 0)
+		return (ft_env(vars, cur_command));
+	else if(ft_strcmp(com, "exit\0") == 0)
+		return (0);
 }
 int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args)
 {
@@ -155,14 +175,17 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 
 	k = 0;
 	com = cur_command->arguments[0];
-	if (com == "echo\0" || com == "cd\0" || com == "pdw\0" || com == "export\0" || com == "unset\0" || com == "env\0" || com == "exit\0") //TODO исправить на strcmp
+	if (ft_strcmp(com, "echo\0") == 0|| ft_strcmp(com, "cd\0") == 0 || ft_strcmp(com, "pdw\0") == 0 || ft_strcmp(com, "export\0") == 0 || ft_strcmp(com, "unset\0") == 0 || ft_strcmp(com, "env\0") == 0 || ft_strcmp(com, "exit\0") == 0)
+	{ //TODO исправить на strcmp
+		build_in(com, vars, args, cur_command);
 		return (0);
+	}
 	while(vars->path[k])
 	{
 		if(tmp = check_exec(vars->path[k], cur_command->arguments[0])){
 			//return (3); //remake
 			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
-			execute_command(tmp, cur_command->arguments, vars->env);
+			execute_command(tmp, cur_command->arguments, vars); 
 			return(0);
 		}
 		k++;
@@ -170,7 +193,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	if(tmp = check_exec(NULL, cur_command->arguments[0])){
 			//return (3); //remake
 			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
-			execute_command(tmp, cur_command->arguments, vars->env);
+			execute_command(tmp, cur_command->arguments, vars);
 			return(0);
 		}
 	printf("%s: command not found\n", com);

@@ -1,6 +1,10 @@
 NAME			= minishell
 
-SRCS = main.c ft_strlen.c check_cmd.c print_error.c ft_strcmp.c spaces.c miniparser.c signals.c test_env.c ft_substr.c ft_strjoin.c ft_calloc.c ft_strlcpy.c ft_strdup.c ft_strncmp.c ft_memset.c
+SRCS = main.c ft_strlen.c check_cmd.c print_error.c\
+		ft_strcmp.c spaces.c miniparser.c signals.c\
+		test_env.c ft_substr.c ft_strjoin.c ft_calloc.c\
+		ft_strlcpy.c ft_strdup.c ft_strncmp.c ft_memset.c\
+		env.c export.c
 
 OBJS = $(SRCS:%.c=%.o)
 

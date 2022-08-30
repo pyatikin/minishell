@@ -43,6 +43,7 @@ typedef struct s_env_var
 	char	**path;
 	int		stdin_fd;
 	int		stdout_fd;
+	int		status;
 }	t_env_var;
 
 void set_signals();
@@ -53,5 +54,8 @@ char	*ft_chng_line(char **cmd);
 t_command	*parsbody(char *pipe_line);
 size_t	ft_strlen(const char *str);
 int	start_path(t_command *args, t_env_var *vars);
+int ft_env(t_env_var *vars, t_simpleCommand *cur_command);
+int	find_env(char **env, char *s);
+int ft_export(t_env_var *vars, t_command *args, t_simpleCommand *cur_command);
 
 #endif
