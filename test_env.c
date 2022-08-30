@@ -233,6 +233,7 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		i++;
 	}
 }
+
 int	start_path(t_command *args, t_env_var *vars)
 {
 	
