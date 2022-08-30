@@ -181,6 +181,7 @@ int back_redirections(t_command *args, int i, t_env_var *env)
 {
 	dup2(env->stdin_fd, STDIN_FILENO);
 	dup2(env->stdout_fd, STDOUT_FILENO);
+	
 	return (0);
 }
 int	exec_loop(t_command *args, t_env_var *vars)
