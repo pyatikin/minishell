@@ -164,8 +164,10 @@ static inline int	check_cmd_sequenses(char *cmd)
 int	pipes_and_redirects(char *cmd)
 {
 	int	i;
-	i = 0;
+	char redirect_type;
+	int count;
 
+	i = 0;
 	if (cmd == NULL)
 		return (unsuccess);
 	//i = ft_strlen(*cmd);
@@ -178,18 +180,16 @@ int	pipes_and_redirects(char *cmd)
 	//	i++;
 	//	*cmd += 1;
 	//}
-	char redirect_type;
-	int count;
+
 	count = 0;
 	redirect_type = '\0';
-	
-	while(cmd[i])
+	while (cmd[i])
 	{	
-		if(cmd[i] == '>' || cmd[i] == '<')
+		if (cmd[i] == '>' || cmd[i] == '<')
 		{
 			if (redirect_type == '\0')
 				redirect_type = cmd[i];
-			else if(cmd[i] == redirect_type)
+			else if (cmd[i] == redirect_type)
 				count++;
 			else
 			{
@@ -197,20 +197,18 @@ int	pipes_and_redirects(char *cmd)
 				return (unsuccess);
 			}
 		}
-		if(cmd[i] == redirect_type && count == 2)
+		if (cmd[i] == redirect_type && count == 2)
 		{
 			print_err(MSG_ERR_MORE2CNTRLS, NULL, redirect_type);
 			return (unsuccess);
 		}
-		
-		if(cmd[i] == ' ')
+		if (cmd[i] == ' ')
 		{
 			redirect_type = '\0';
 			count = 0;
 		}
 		i++;
 	}
-
 	if (*cmd == pipes)
 	{
 		print_err(MSG_ERR_SYNATX, NULL, false);

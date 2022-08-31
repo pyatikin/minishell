@@ -1,5 +1,5 @@
 #include <stdio.h>
-# include <stdlib.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -19,62 +19,64 @@ int	find_env(char **env, char *s)
 	i = 0;
 	while (env[i])
 	{
-		if(ft_strncmp(env[i], s, ft_strlen(s)) == 0)
+		if (ft_strncmp(env[i], s, ft_strlen(s)) == 0)
 			return (i);
 		i++;
 	}
 	return (-1);
 }
+
 int	count_colomns(char *s)
 {
-	int i;
+	int	i;
 
 	i = 1;
-	while(*s)
+	while (*s)
 	{
-		if(*s == ':')
+		if (*s == ':')
 			i++;
 		s++;
 	}
 	return (i);
 }
-void make_path_vector(char* path, char** path_vector, int l)
+
+void	make_path_vector(char *path, char **path_vector, int l)
 {
 	int		i;
 	char	*tmp;
 
-	while(*path)
+	while (*path)
 	{
 		//write(1,"1\n", 2);
-		
 		i = 0;
-		while(*path && *(path++) != ':')
+		while (*path && *(path++) != ':')
 			i++;
-		if(*(--path) != ':')
+		if (*(--path) != ':')
 			path++;
 		path = path - i;
 		//printf("%d)%s\n\n",i, path);
 		(path_vector)[--l] = ft_substr(path, 0, i);
 		//printf("%s", path_vector[l]);
 		tmp = path;
-		path = ft_substr(tmp, i+1, ft_strlen(tmp)+1);				
+		path = ft_substr(tmp, i + 1, ft_strlen(tmp) + 1);				
 	}
 }
 
-char *check_exec(char *dir, char *cmd)
+char	*check_exec(char *dir, char *cmd)
 {
-	char 		*all;
+	char		*all;
 	struct stat	sb;
 
-	if(dir)
+	if (dir)
 	{
-		if(dir[ft_strlen(dir)] != '/')
+		if (dir[ft_strlen(dir)] != '/')
 			dir = ft_strjoin(dir, "/\0");
 	}
 	all = ft_strjoin(dir, cmd);
 	if (access(all, F_OK) == 0)
 	{
-		if (stat(all, &sb) > 0 && ((sb.st_mode & S_IFMT) != S_IFREG || (sb.st_mode & S_IFMT) != S_IFDIR))
+		if (stat(all, &sb) > 0 && ((sb.st_mode & S_IFMT) != S_IFREG ||\
+			(sb.st_mode & S_IFMT) != S_IFDIR))
 		{
 			printf("%s: No such file or directory\n", all);
 			free(all);
@@ -82,33 +84,37 @@ char *check_exec(char *dir, char *cmd)
 		}
 		return (all);
 	}
-	return(NULL);
+	return (NULL);
 }
-int do_db_redirections(t_command *args, int i, t_env_var *vars)
+
+int	do_db_redirections(t_command *args, int i, t_env_var *vars)
 {
 	//printf("NUM = %d", args->number_of_simple_commands);
-	if(!(args->simple_commands[i]->out_file == NULL && args->number_of_simple_commands > i + 1  && args->simple_commands[i+1]->in_file == NULL))
+	if (!(args->simple_commands[i]->out_file == NULL && \
+			args->number_of_simple_commands > i + 1 && \
+			args->simple_commands[i + 1]->in_file == NULL))
 		return (1);
 	//write(1, "1\n", 2);
 	pipe(args->simple_commands[i]->db_fd);
 	//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
 	dup2(args->simple_commands[i]->db_fd[1], STDOUT_FILENO);
 	close(args->simple_commands[i]->db_fd[1]);
-	return (0);	
-}
-int get_db_redirections(t_command *args, int i, t_env_var *vars)
-{
-	
-	if (i > 0 && args->simple_commands[i-1]->out_file == NULL && args->simple_commands[i]->in_file == NULL)
-	{
-		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
-		dup2(args->simple_commands[i-1]->db_fd[0], STDIN_FILENO);
-		close(args->simple_commands[i-1]->db_fd[0]);
-	}
-	return(0);
+	return (0);
 }
 
-int do_redirections(t_command *args, int i, t_env_var *vars)
+int	get_db_redirections(t_command *args, int i, t_env_var *vars)
+{
+	if (i > 0 && args->simple_commands[i - 1]->out_file == NULL && \
+		args->simple_commands[i]->in_file == NULL)
+	{
+		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
+		dup2(args->simple_commands[i - 1]->db_fd[0], STDIN_FILENO);
+		close(args->simple_commands[i - 1]->db_fd[0]);
+	}
+	return (0);
+}
+
+int	do_redirections(t_command *args, int i, t_env_var *vars)
 {
 	int	in;
 	int	out;
@@ -146,24 +152,25 @@ int execute_command(char	*tmp, char **arg, t_env_var *vars)
 	else if (pid < 0)
 		return (-1);
 	waitpid(pid, &status, 0);
-	printf("STATUS = %d", errno);
-	perror("execve");
+	//printf("STATUS = %d", errno);
+	//perror("execve");
 }
-int build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_command)
+
+int	build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_command)
 {
-	if(ft_strcmp(com, "echo\0") == 0)
+	if (ft_strcmp(com, "echo\0") == 0)
 		return (0);
-	else if(ft_strcmp(com, "cd\0") == 0)
+	else if (ft_strcmp(com, "cd\0") == 0)
 		return (0);
-	else if(ft_strcmp(com, "pwd\0") == 0)
+	else if (ft_strcmp(com, "pwd\0") == 0)
 		return (0);
-	else if(ft_strcmp(com, "export\0") == 0)
+	else if (ft_strcmp(com, "export\0") == 0)
 		return (ft_export(vars, args, cur_command));
-	else if(ft_strcmp(com, "unset\0") == 0)
+	else if (ft_strcmp(com, "unset\0") == 0)
 		return (0);
-	else if(ft_strcmp(com, "env\0") == 0)
+	else if (ft_strcmp(com, "env\0") == 0)
 		return (ft_env(vars, cur_command));
-	else if(ft_strcmp(com, "exit\0") == 0)
+	else if (ft_strcmp(com, "exit\0") == 0)
 		return (0);
 }
 int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args)
@@ -171,42 +178,47 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	char		*com;
 	struct stat	sb;
 	char		*tmp;
-	int 		k;
+	int			k;
 
 	k = 0;
 	com = cur_command->arguments[0];
-	if (ft_strcmp(com, "echo\0") == 0|| ft_strcmp(com, "cd\0") == 0 || ft_strcmp(com, "pdw\0") == 0 || ft_strcmp(com, "export\0") == 0 || ft_strcmp(com, "unset\0") == 0 || ft_strcmp(com, "env\0") == 0 || ft_strcmp(com, "exit\0") == 0)
+	if (ft_strcmp(com, "echo\0") == 0 || ft_strcmp(com, "cd\0") == 0 || \
+	ft_strcmp(com, "pdw\0") == 0 || ft_strcmp(com, "export\0") == 0 || \
+	ft_strcmp(com, "unset\0") == 0 || ft_strcmp(com, "env\0") == 0 || \
+	ft_strcmp(com, "exit\0") == 0)
 	{ //TODO исправить на strcmp
 		build_in(com, vars, args, cur_command);
 		return (0);
 	}
-	while(vars->path[k])
+	while (vars->path[k])
 	{
-		if(tmp = check_exec(vars->path[k], cur_command->arguments[0])){
+		if (tmp = check_exec(vars->path[k], cur_command->arguments[0]))
+		{
 			//return (3); //remake
 			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
 			execute_command(tmp, cur_command->arguments, vars); 
-			return(0);
+			return (0);
 		}
 		k++;
 	}
-	if(tmp = check_exec(NULL, cur_command->arguments[0])){
-			//return (3); //remake
-			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
-			execute_command(tmp, cur_command->arguments, vars);
-			return(0);
-		}
+	if (tmp = check_exec(NULL, cur_command->arguments[0]))
+	{
+		//return (3); //remake
+		//execve(tmp, args->simple_commands[0]->arguments, vars->env);
+		execute_command(tmp, cur_command->arguments, vars);
+		return (0);
+	}
 	printf("%s: command not found\n", com);
 	return (1);
 }
 
-int back_redirections(t_command *args, int i, t_env_var *env)
+int	back_redirections(t_command *args, int i, t_env_var *env)
 {
 	dup2(env->stdin_fd, STDIN_FILENO);
 	dup2(env->stdout_fd, STDOUT_FILENO);
-	
 	return (0);
 }
+
 int	exec_loop(t_command *args, t_env_var *vars)
 {
 	int	i;
@@ -214,11 +226,9 @@ int	exec_loop(t_command *args, t_env_var *vars)
 	i = 0;
 	while (i < args->number_of_simple_commands)
 	{
-		
 		do_redirections(args, i, vars);
 		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
-		//printf("QQQQQQQQQ = %p", args->simple_commands[i+1]);
-		
+		//printf("QQQQQQQQQ = %p", args->simple_commands[i+1]);	
 		do_db_redirections(args, i, vars);
 		get_db_redirections(args, i, vars);
 		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
@@ -239,15 +249,12 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		//
 		//args = parsbody(args->cmd);
 		//printf("|%s|\n", args->cmd);
-
-
-
 		///////////////////| exec |/////////////////////////
 		//int k = 0;
 		//char *tmp;
 		//while(vars->path[k])
 		//{
-		//	if(tmp = check_exec(vars->path[k], args->simple_commands[0]->arguments[0]))
+		//if(tmp = check_exec(vars->path[k], args->simple_commands[0]->arguments[0]))
 //		//	
 //		//		execve(tmp, args->simple_commands[0]->arguments, vars->env);
 //
@@ -259,12 +266,12 @@ int	exec_loop(t_command *args, t_env_var *vars)
 
 int	start_path(t_command *args, t_env_var *vars)
 {
-	
-	
 	//printf("%s\n", (vars->env[find_env(vars->env, "PATH")]));
-	vars->path = malloc(sizeof(char*)*(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
+	vars->path = malloc(sizeof(char *) * \
+	(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
 	vars->path[count_colomns(vars->env[find_env(vars->env, "PATH")])] = NULL;
-	make_path_vector(vars->env[find_env(vars->env, "PATH")]+5, vars->path, count_colomns(vars->env[find_env(vars->env, "PATH")]));
+	make_path_vector(vars->env[find_env(vars->env, "PATH")] + 5, vars->path, \
+	count_colomns(vars->env[find_env(vars->env, "PATH")]));
 	//int l = count_colomns(vars->env[find_env(vars->env, "PATH")]);
 	//while(l--)
 	//{

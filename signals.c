@@ -16,30 +16,34 @@ void	echo_ctl(char on)
 		tstate.c_lflag &= ~ECHOCTL;
 	tcsetattr(0, TCSANOW, &tstate);
 }
-void c_handler(int s){
+
+void	c_handler(void)
+{
 	rl_on_new_line();
 	printf("\n");
 	rl_replace_line("", 1);
 	rl_on_new_line();
 	rl_redisplay();
 }
-void n_handler(int s){
+
+void	n_handler(void)
+{
 	//rl_on_new_line();
 	//rl_redisplay();
 }
-void set_signals()
+
+void	set_signals(void)
 {
-	struct sigaction sigIntHandler_C;
-	struct sigaction sigIntHandler_N;
+	struct sigaction	sig_int_handler_c;
+	struct sigaction	sig_int_handler_n;
 
 	echo_ctl(0);
-	sigIntHandler_C.sa_handler = c_handler;
-	sigemptyset(&sigIntHandler_C.sa_mask);
-	sigIntHandler_C.sa_flags = 0;
-	sigaction(SIGINT, &sigIntHandler_C, NULL);
-
-	sigIntHandler_N.sa_handler = n_handler;
-	sigemptyset(&sigIntHandler_N.sa_mask);
-	sigIntHandler_N.sa_flags = 0;
-	sigaction(SIGQUIT, &sigIntHandler_N, NULL);
+	sig_int_handler_c.sa_handler = c_handler;
+	sigemptyset(&sig_int_handler_c.sa_mask);
+	sig_int_handler_c.sa_flags = 0;
+	sigaction(SIGINT, &sig_int_handler_c, NULL);
+	sig_int_handler_n.sa_handler = n_handler;
+	sigemptyset(&sig_int_handler_n.sa_mask);
+	sig_int_handler_n.sa_flags = 0;
+	sigaction(SIGQUIT, &sig_int_handler_n, NULL);
 }

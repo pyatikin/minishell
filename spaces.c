@@ -78,8 +78,8 @@ int	count_true_spaces(char *cmd, int start)
 
 void	make_new_cmd(char *cmd, char **new_cmd, int start)
 {
-	int	i;
-	int	flag;
+	int		i;
+	int		flag;
 	char	*quote_type;
 
 	i = 0;
