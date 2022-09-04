@@ -17,7 +17,7 @@ void	echo_ctl(char on)
 	tcsetattr(0, TCSANOW, &tstate);
 }
 
-void	c_handler(void)
+void	c_handler(int s)
 {
 	rl_on_new_line();
 	printf("\n");
@@ -26,7 +26,7 @@ void	c_handler(void)
 	rl_redisplay();
 }
 
-void	n_handler(void)
+void	n_handler(int s) //TODO проверить в чек листе
 {
 	//rl_on_new_line();
 	//rl_redisplay();

@@ -67,15 +67,17 @@ char	*check_exec(char *dir, char *cmd)
 	char		*all;
 	struct stat	sb;
 
+	all = NULL;
 	if (dir)
 	{
 		if (dir[ft_strlen(dir)] != '/')
-			dir = ft_strjoin(dir, "/\0");
+			all = ft_strjoin(dir, "/\0");
 	}
-	all = ft_strjoin(dir, cmd);
+	all = ft_strjoin(all, cmd);
+	//printf("!!!!!!!!!   %s\n", all);
 	if (access(all, F_OK) == 0)
 	{
-		if (stat(all, &sb) > 0 && ((sb.st_mode & S_IFMT) != S_IFREG ||\
+		if (stat(all, &sb) != 0 && ((sb.st_mode & S_IFMT) != S_IFREG ||\
 			(sb.st_mode & S_IFMT) != S_IFDIR))
 		{
 			printf("%s: No such file or directory\n", all);
@@ -84,6 +86,7 @@ char	*check_exec(char *dir, char *cmd)
 		}
 		return (all);
 	}
+	free(all);
 	return (NULL);
 }
 
@@ -148,11 +151,15 @@ int execute_command(char	*tmp, char **arg, t_env_var *vars)
 
 	pid = fork();
 	if (pid == 0)
+	{
+		//printf("STATUS = %d\n", vars->status);
 		vars->status = execve(tmp, arg, vars->env);
+	}
 	else if (pid < 0)
 		return (-1);
 	waitpid(pid, &status, 0);
-	//printf("STATUS = %d", errno);
+	//printf("STATUS = %d\n", WEXITSTATUS (status));
+	//rl_on_new_line();
 	//perror("execve");
 }
 
@@ -167,7 +174,7 @@ int	build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_co
 	else if (ft_strcmp(com, "export\0") == 0)
 		return (ft_export(vars, args, cur_command));
 	else if (ft_strcmp(com, "unset\0") == 0)
-		return (0);
+		return (ft_unset(args, vars, cur_command));
 	else if (ft_strcmp(com, "env\0") == 0)
 		return (ft_env(vars, cur_command));
 	else if (ft_strcmp(com, "exit\0") == 0)
@@ -266,6 +273,7 @@ int	exec_loop(t_command *args, t_env_var *vars)
 
 int	start_path(t_command *args, t_env_var *vars)
 {
+	
 	//printf("%s\n", (vars->env[find_env(vars->env, "PATH")]));
 	vars->path = malloc(sizeof(char *) * \
 	(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
@@ -277,6 +285,6 @@ int	start_path(t_command *args, t_env_var *vars)
 	//{
 	//	printf("%d)\t%s\n",l, vars->path[l]);
 	//}
-	exec_loop(args, vars);
+	//exec_loop(args, vars);
 	//printf("NUM = %d", args->number_of_simple_commands);
 }

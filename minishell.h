@@ -57,5 +57,9 @@ int	start_path(t_command *args, t_env_var *vars);
 int ft_env(t_env_var *vars, t_simpleCommand *cur_command);
 int	find_env(char **env, char *s);
 int ft_export(t_env_var *vars, t_command *args, t_simpleCommand *cur_command);
+int ft_clean(t_command *args, t_env_var *vars);
+int	exec_loop(t_command *args, t_env_var *vars);
+int last_clean(t_command *args, t_env_var *vars);
+int ft_unset(t_command *args, t_env_var *vars, t_simpleCommand *cur_command);
 
 #endif

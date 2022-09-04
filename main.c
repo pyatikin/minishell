@@ -10,34 +10,58 @@
 #define MYSHELL "Myshell > "
 
 
-int	input_loop(t_command *args, t_env_var *vars)
+int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 {
+	
 	while (1)
 	{
-		args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
-		if (!args->cmd)
+		tmp = readline(BEGIN(30, 36) MYSHELL CLOSE);
+		if (!tmp)
 		{
 			printf("exit\n");
 			return (0);
 		}
-		if (ft_strlen(args->cmd))
-			add_history(args->cmd);
-		args->cmd = ft_chng_line(&(args->cmd));
-		if (check_cmd((args->cmd)) != 0)
+		if (ft_strlen(tmp))
+			add_history(tmp);
+		tmp = ft_chng_line(&tmp);
+		if (check_cmd((tmp)) != 0)
 			continue;
 		//write(1, args->cmd, sizeof(args->cmd));
 		
-		args = parsbody(args->cmd);
-		//printf("|%s|\n", args->cmd);
+		args = parsbody(tmp);
+		free(tmp);
 		start_path(args, vars);
+		//printf("|%s|\n", args->cmd);
+		exec_loop(args, vars);
+		ft_clean(args, vars);
 	}
+	ft_clean(args, vars);
+	last_clean(args, vars);
 }
+
+int dup_env(t_env_var *vars, char **env)
+{
+	int	i;
+	int	c;
+
+	i = -1;
+	c = 0;
+	while(env[++i])
+		c++;
+	vars->env = malloc(sizeof(char *) * (c + 1));
+	vars->env[c] = NULL;
+	i = -1;
+	while(env[++i])
+		vars->env[i] = ft_strdup(env[i]);	
+}
+
 int preprocess(t_env_var *vars, char **env)
 {
 	
-	vars->env = env;
+	dup_env(vars, env);
 	vars->stdin_fd = dup(STDIN_FILENO);
 	vars->stdout_fd = dup(STDOUT_FILENO);
+	
 	//printf("stdin = %d,\tstdout = %d", vars->stdin_fd, vars->stdout_fd);
 }
 
@@ -45,7 +69,8 @@ int	main(int argc, char **argv, char **env)
 {
 	t_command	args;
 	int			res;
-	t_env_var vars;
+	t_env_var	vars;
+	char		*tmp;
 
 
 	set_signals();
@@ -59,7 +84,8 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	if (argc == 1)
 	{
-		input_loop(&args, &vars);
+		input_loop(&args, &vars, tmp);
+		
 		//close(args.fd);
 		//free(args.res);
 		//args.res = get_env_value("LES", args.env);

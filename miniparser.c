@@ -73,7 +73,7 @@ t_command	*parsbody(char *pipe_line)
 	}
 	command->simple_commands[command->number_of_simple_commands] = NULL;
 	pipe_line = ft_pars_simple(pipe_line, command);
-
+	//printf("111111 = %p\n", command);//////////////////////////
 	//вывод структур
 	i = 0;
 	j = 0;
