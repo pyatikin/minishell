@@ -45,6 +45,7 @@ void	make_path_vector(char *path, char **path_vector, int l)
 	int		i;
 	char	*tmp;
 
+	path = ft_substr(path, 0, ft_strlen(path));
 	while (*path)
 	{
 		//write(1,"1\n", 2);
@@ -58,8 +59,10 @@ void	make_path_vector(char *path, char **path_vector, int l)
 		(path_vector)[--l] = ft_substr(path, 0, i);
 		//printf("%s", path_vector[l]);
 		tmp = path;
-		path = ft_substr(tmp, i + 1, ft_strlen(tmp) + 1);				
+		path = ft_substr(tmp, i + 1, ft_strlen(tmp) + 1);		
+		free(tmp);		
 	}
+	free(path);
 }
 
 char	*check_exec(char *dir, char *cmd)
@@ -68,12 +71,16 @@ char	*check_exec(char *dir, char *cmd)
 	struct stat	sb;
 
 	all = NULL;
+	if (dir != NULL && (cmd[0] == '/' || cmd[0] == '.'))
+		return (NULL);
 	if (dir)
 	{
 		if (dir[ft_strlen(dir)] != '/')
-			all = ft_strjoin(dir, "/\0");
+			dir = ft_strjoin(dir, "/\0");
 	}
-	all = ft_strjoin(all, cmd);
+	all = ft_strjoin(dir, cmd);
+	if(ft_strcmp(dir, "/") != 0)
+		free(dir);
 	//printf("!!!!!!!!!   %s\n", all);
 	if (access(all, F_OK) == 0)
 	{
@@ -204,6 +211,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 			//return (3); //remake
 			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
 			execute_command(tmp, cur_command->arguments, vars); 
+			free(tmp);
 			return (0);
 		}
 		k++;
@@ -213,6 +221,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 		//return (3); //remake
 		//execve(tmp, args->simple_commands[0]->arguments, vars->env);
 		execute_command(tmp, cur_command->arguments, vars);
+		free(tmp);
 		return (0);
 	}
 	printf("%s: command not found\n", com);

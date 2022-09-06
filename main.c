@@ -75,7 +75,7 @@ int	main(int argc, char **argv, char **env)
 
 	set_signals();
 	preprocess(&vars, env);
-	
+
 	//start_path(&args, env, &vars);
 	//sig_t		h_fun;
 	//h_fun = &n_handler;
@@ -85,7 +85,9 @@ int	main(int argc, char **argv, char **env)
 	if (argc == 1)
 	{
 		input_loop(&args, &vars, tmp);
-		
+		rl_clear_history();
+		//free(vars.env);
+		//last_clean(&args, &vars);
 		//close(args.fd);
 		//free(args.res);
 		//args.res = get_env_value("LES", args.env);
