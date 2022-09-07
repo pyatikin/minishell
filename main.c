@@ -12,7 +12,6 @@
 
 int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 {
-	
 	while (1)
 	{
 		tmp = readline(BEGIN(30, 36) MYSHELL CLOSE);
@@ -35,8 +34,7 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 		exec_loop(args, vars);
 		ft_clean(args, vars);
 	}
-	ft_clean(args, vars);
-	last_clean(args, vars);
+	
 }
 
 int dup_env(t_env_var *vars, char **env)
@@ -75,6 +73,7 @@ int	main(int argc, char **argv, char **env)
 
 	set_signals();
 	preprocess(&vars, env);
+	//printf("P = %p\n", vars.env);
 
 	//start_path(&args, env, &vars);
 	//sig_t		h_fun;
@@ -86,6 +85,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		input_loop(&args, &vars, tmp);
 		rl_clear_history();
+		last_clean(&args, &vars);
 		//free(vars.env);
 		//last_clean(&args, &vars);
 		//close(args.fd);

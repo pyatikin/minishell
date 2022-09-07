@@ -47,11 +47,11 @@ int last_clean(t_command *args, t_env_var *vars)
 		free(vars->env[i]);
 	free(vars->env[i]);
 	free(vars->env);
-	i = -1;
-	while(vars->path[++i])
-		free(vars->path[i]);
-	free(vars->path[i]);
-	free(vars->path);
+	//i = -1;
+	//while(vars->path[++i])
+	//	free(vars->path[i]);
+	//free(vars->path[i]);
+	//free(vars->path);
 	close(vars->stdin_fd);
 	close(vars->stdout_fd);
 
