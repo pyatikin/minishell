@@ -71,7 +71,7 @@ int	main(int argc, char **argv, char **env)
 	char		*tmp;
 
 
-	set_signals();
+	set_signals(1, 0);
 	preprocess(&vars, env);
 	//printf("P = %p\n", vars.env);
 

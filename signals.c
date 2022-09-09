@@ -17,33 +17,84 @@ void	echo_ctl(char on)
 	tcsetattr(0, TCSANOW, &tstate);
 }
 
-void	c_handler(int s)
+void	usual_handler(int s)
 {
-	rl_on_new_line();
-	printf("\n");
-	rl_replace_line("", 1);
-	rl_on_new_line();
-	rl_redisplay();
+	//rl_on_new_line();
+	//printf("\n");
+	//rl_replace_line("", 1);
+	////rl_on_new_line();
+	//rl_redisplay();
+	if (s == SIGQUIT)
+	{
+		//rl_on_new_line();
+		//rl_redisplay();
+	}
+	else if (s == SIGINT)
+	{
+			rl_on_new_line();
+			printf("\n");
+			rl_replace_line("", 1);
+			rl_on_new_line();
+			rl_redisplay();
+	}
 }
 
-void	n_handler(int s) //TODO проверить в чек листе
+void	handler_heredoc(int s)
+{
+	if (s == SIGQUIT)
+	{
+		//rl_on_new_line();
+		//rl_redisplay();
+		printf("Quit\n");
+		//rl_replace_line("", 1);
+		//rl_on_new_line();
+		//rl_redisplay();
+	}
+	else if (s == SIGINT)
+	{
+		//if (MAC_OS)
+		//{
+			//rl_on_new_line();
+			//rl_redisplay();
+		//}
+		printf("\n");
+		rl_replace_line("", 1);
+		//rl_on_new_line();
+		rl_redisplay();
+	}
+}
+
+void	no_handler(int s) //TODO проверить в чек листе
 {
 	//rl_on_new_line();
 	//rl_redisplay();
 }
 
-void	set_signals(void)
+void	set_signals(int handler, int ctl)
 {
-	struct sigaction	sig_int_handler_c;
-	struct sigaction	sig_int_handler_n;
+	//struct sigaction	sig_int_handler_c;
+	//struct sigaction	sig_int_handler_n;
+//
+	//echo_ctl(0);
+	//sig_int_handler_c.sa_handler = c_handler;
+	//sigemptyset(&sig_int_handler_c.sa_mask);
+	//sig_int_handler_c.sa_flags = 0;
+	//sigaction(SIGINT, &sig_int_handler_c, NULL);
+	//sig_int_handler_n.sa_handler = n_handler;
+	//sigemptyset(&sig_int_handler_n.sa_mask);
+	//sig_int_handler_n.sa_flags = 0;
+	//sigaction(SIGQUIT, &sig_int_handler_n, NULL);
+	sig_t		h_fun;
 
-	echo_ctl(0);
-	sig_int_handler_c.sa_handler = c_handler;
-	sigemptyset(&sig_int_handler_c.sa_mask);
-	sig_int_handler_c.sa_flags = 0;
-	sigaction(SIGINT, &sig_int_handler_c, NULL);
-	sig_int_handler_n.sa_handler = n_handler;
-	sigemptyset(&sig_int_handler_n.sa_mask);
-	sig_int_handler_n.sa_flags = 0;
-	sigaction(SIGQUIT, &sig_int_handler_n, NULL);
+	if (handler == 1)
+		h_fun = &usual_handler;
+	else if (handler == 2)
+		h_fun = &no_handler;
+	else if (handler == 3)
+		h_fun = &handler_heredoc;
+	else
+		h_fun = &no_handler;
+	echo_ctl(ctl);
+	signal(SIGINT, h_fun);
+	signal(SIGQUIT, h_fun);
 }

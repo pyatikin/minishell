@@ -26,13 +26,14 @@ int find_and_del(t_env_var *vars, char *del)
 	i = -1;
 	while(vars->env[++i])
 		free(vars->env[i]);
+    free(vars->env[i]);
 	free(vars->env);
 	vars->env = tmp;
 }
 
 int ft_unset(t_command *args, t_env_var *vars, t_simpleCommand *cur_command)
 {
-    if(cur_command->number_of_arguments == 1)
+    if(cur_command->number_of_arguments != 2)
         return (0);
     else if (cur_command->number_of_arguments == 2)
     {

@@ -46,7 +46,7 @@ typedef struct s_env_var
 	int		status;
 }	t_env_var;
 
-void set_signals();
+void	set_signals(int handler, int ctl);
 int	escaped(char *cmd, int i);
 int	check_cmd(char *cmd);
 void	print_err(char *main, char	*word, char ch);

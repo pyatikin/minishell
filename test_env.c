@@ -197,7 +197,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	k = 0;
 	com = cur_command->arguments[0];
 	if (ft_strcmp(com, "echo\0") == 0 || ft_strcmp(com, "cd\0") == 0 || \
-	ft_strcmp(com, "pdw\0") == 0 || ft_strcmp(com, "export\0") == 0 || \
+	ft_strcmp(com, "pwd\0") == 0 || ft_strcmp(com, "export\0") == 0 || \
 	ft_strcmp(com, "unset\0") == 0 || ft_strcmp(com, "env\0") == 0 || \
 	ft_strcmp(com, "exit\0") == 0)
 	{ //TODO исправить на strcmp
@@ -248,7 +248,9 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		do_db_redirections(args, i, vars);
 		get_db_redirections(args, i, vars);
 		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
+		set_signals(3, 1);
 		check_command(args->simple_commands[i], vars, args);
+		set_signals(1, 0);
 		back_redirections(args, i, vars);
 		//args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
 		//if (!args->cmd)
@@ -284,11 +286,16 @@ int	start_path(t_command *args, t_env_var *vars)
 {
 	
 	//printf("%s\n", (vars->env[find_env(vars->env, "PATH")]));
+	if (find_env(vars->env, "PATH") != -1)
+	{
 	vars->path = malloc(sizeof(char *) * \
 	(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
 	vars->path[count_colomns(vars->env[find_env(vars->env, "PATH")])] = NULL;
 	make_path_vector(vars->env[find_env(vars->env, "PATH")] + 5, vars->path, \
 	count_colomns(vars->env[find_env(vars->env, "PATH")]));
+	}
+	else
+		vars->path = calloc(sizeof(char *), 1);
 	//int l = count_colomns(vars->env[find_env(vars->env, "PATH")]);
 	//while(l--)
 	//{
