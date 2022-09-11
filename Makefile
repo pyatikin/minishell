@@ -1,10 +1,11 @@
 NAME			= minishell
 
 SRCS = main.c ft_strlen.c check_cmd.c print_error.c\
-		ft_strcmp.c spaces.c miniparser.c signals.c\
+		ft_strcmp.c spaces.c signals.c\
 		test_env.c ft_substr.c ft_strjoin.c ft_calloc.c\
 		ft_strlcpy.c ft_strdup.c ft_strncmp.c ft_memset.c\
-		env.c export.c exit.c unset.c
+		env.c export.c exit.c unset.c \
+		echo.c pwd.c tools.c pars_dollar.c pars_file.c pars_zero.c pars_main.c pars_flags_alock.c pars_quotes_1.c pars_quotes_2.c cd.c ft_putendl_fd.c ft_putchar_fd.c ft_putstr_fd.c
 
 OBJS = $(SRCS:%.c=%.o)
 

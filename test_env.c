@@ -173,13 +173,13 @@ int execute_command(char	*tmp, char **arg, t_env_var *vars)
 int	build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_command)
 {
 	if (ft_strcmp(com, "echo\0") == 0)
-		return (0);
+		return (ft_echo((cur_command->arguments)));
 	else if (ft_strcmp(com, "cd\0") == 0)
-		return (0);
+		return (ft_cd(cur_command->arguments, vars));
 	else if (ft_strcmp(com, "pwd\0") == 0)
-		return (0);
+		return (ft_pwd());
 	else if (ft_strcmp(com, "export\0") == 0)
-		return (ft_export(vars, args, cur_command));
+		return (ft_export(vars, cur_command));
 	else if (ft_strcmp(com, "unset\0") == 0)
 		return (ft_unset(args, vars, cur_command));
 	else if (ft_strcmp(com, "env\0") == 0)

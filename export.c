@@ -98,7 +98,7 @@ int	available_var(t_env_var *vars, t_simpleCommand *cur_command)
 	return (0);
 }
 
-int	ft_export(t_env_var *vars, t_command *args, t_simpleCommand *cur_command)
+int	ft_export(t_env_var *vars, t_simpleCommand *cur_command)
 {
 	int	i;
 

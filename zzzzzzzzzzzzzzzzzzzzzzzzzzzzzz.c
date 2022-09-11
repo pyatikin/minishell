@@ -1,10 +1,7 @@
 #include "minishell.h"
 int	main(int argc, char **argv, char **env)
 {
-    while(*env)
-    {
-        printf("%s\n", *(env));
-        //env++;
-    }
-    return(0);
+    char *a[] = {"cat", "< 1", NULL};
+    execve("/bin/cat", a, env);
+    return 0;
 }

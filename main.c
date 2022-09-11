@@ -27,7 +27,7 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 			continue;
 		//write(1, args->cmd, sizeof(args->cmd));
 		
-		args = parsbody(tmp);
+		args = parsbody(tmp, vars->env);
 		free(tmp);
 		start_path(args, vars);
 		//printf("|%s|\n", args->cmd);
