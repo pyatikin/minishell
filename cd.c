@@ -34,7 +34,7 @@ static int	update_oldpwd(t_env_var *env)
 		return (1);
 	if (!(oldpwd = ft_strjoin("OLDPWD=", cwd)))
 		return (1);
-	if (find_env(env->env, oldpwd) == -1)
+	if (find_env(env->env, "OLDPWD=") == -1)
 		add_new_env(env, oldpwd);
 	free(oldpwd);
 	return (0);
