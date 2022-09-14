@@ -116,4 +116,5 @@ int				ft_unset(t_command *args, t_env_var *vars, t_simpleCommand *cur_command);
 int				add_new_env(t_env_var *vars, char* new);
 int				ft_cd(char **args, t_env_var *env);
 void			ft_putendl_fd(const char *s, int fd);
+void		do_read_input(char *target, t_simpleCommand *cur_command);
 #endif

@@ -132,7 +132,8 @@ int	do_redirections(t_command *args, int i, t_env_var *vars)
 	if (args->simple_commands[i]->in_file_type == 1)
 		args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
 	else if (args->simple_commands[i]->in_file_type == 2)
-		args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
+		//args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
+		args->simple_commands[i]->in_fd = vars->stdin_fd;
 	else 
 		args->simple_commands[i]->in_fd = vars->stdin_fd;
 	if	(args->simple_commands[i]->out_file_type == 1)
@@ -196,6 +197,12 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 
 	k = 0;
 	com = cur_command->arguments[0];
+	if (cur_command->in_file_type == read_input)
+	{
+		//set_signals(2, 0);
+		do_read_input(ft_strdup(cur_command->in_file), cur_command);
+		//set_signals(1, 0);
+	}
 	if (ft_strcmp(com, "echo\0") == 0 || ft_strcmp(com, "cd\0") == 0 || \
 	ft_strcmp(com, "pwd\0") == 0 || ft_strcmp(com, "export\0") == 0 || \
 	ft_strcmp(com, "unset\0") == 0 || ft_strcmp(com, "env\0") == 0 || \
@@ -248,9 +255,9 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		do_db_redirections(args, i, vars);
 		get_db_redirections(args, i, vars);
 		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
-		set_signals(3, 1);
+		//set_signals(3, 1);
 		check_command(args->simple_commands[i], vars, args);
-		set_signals(1, 0);
+		//set_signals(1, 0);
 		back_redirections(args, i, vars);
 		//args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
 		//if (!args->cmd)
