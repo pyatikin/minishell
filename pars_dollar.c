@@ -6,6 +6,8 @@ int	ft_dollar_leng(int i, char *pipe_line)
 
 	j = 0;
 	i++;
+	if (ft_isalnum(pipe_line[i]) == 0)
+		return (1);
 	while (pipe_line[i])
 	{
 		if (ft_isalnum(pipe_line[i]) == 0)
@@ -13,6 +15,9 @@ int	ft_dollar_leng(int i, char *pipe_line)
 		i++;
 		j++;
 	}
+	if (pipe_line[i - 1] && pipe_line[i] && \
+		pipe_line[i - 1] == '$' && pipe_line[i] == '?')
+		j = 1;
 	return (j);
 }
 
@@ -31,7 +36,13 @@ char	*ft_env_var(int i, char *pipe_line, int k, t_command *command)
 		res[j] = pipe_line[i + j];
 		j++;
 	}
-	res = ft_find_env_var(&res, command->env);
+	if (ft_strlen(res) == 1 && res[0] == '?')
+	{
+		free(res);
+		res = ft_itoa(command->result);
+	}
+	else if (res[0])
+		res = ft_find_env_var(&res, command->env);
 	return (res);
 }
 
@@ -44,6 +55,7 @@ char	*ft_find_env_var(char **var, char **env)
 
 	ft_zero_var(&i, &k, &m, &res);
 	i = find_env(env, *var);
+	free(*var);
 	if (i != -1)
 	{
 		while (env[i][k])
@@ -52,11 +64,7 @@ char	*ft_find_env_var(char **var, char **env)
 				break ;
 			k++;
 		}
-		free(*var);
-		*var = NULL;
-		res = (char *)malloc(ft_strlen(env[i]) - k);
-		res[ft_strlen(env[i]) - k - 1] = '\0';
-		k++;
+		ft_fev_dop(&res, env, i, &k);
 		while (env[i][k])
 		{
 			res[m] = env[i][k];
@@ -67,7 +75,8 @@ char	*ft_find_env_var(char **var, char **env)
 	return (res);
 }
 
-char	*ft_pipe_line_chng(char **pipe_line, char *res, int *i_k, t_command *command)
+char	*ft_pipe_line_chng(char **pipe_line, char *res, int *i_k, \
+			t_command *command)
 {
 	int		size;
 	int		t;
@@ -89,13 +98,7 @@ char	*ft_pipe_line_chng(char **pipe_line, char *res, int *i_k, t_command *comman
 			new_pl[t] = (*pipe_line)[ft_strlen(*pipe_line) - (size - t)];
 		t++;
 	}
-	while (del < command->tmp)
-	{
-		del++;
-		(*pipe_line)--;
-	}
-	command->tmp=0;
-	free(*pipe_line);
+	ft_cl_pl(&del, command, pipe_line);
 	return (new_pl);
 }
 
@@ -106,8 +109,7 @@ char	*ft_dollar(char **pipe_line, t_command *command)
 
 	i_k[0] = 0;
 	i_k[1] = 0;
-	while ((*pipe_line)[i_k[0]] && (*pipe_line)[i_k[0]] != '|' \
-			&& (*pipe_line)[i_k[0]] != '<' && (*pipe_line)[i_k[0]] != '>')
+	while ((*pipe_line)[i_k[0]] && (*pipe_line)[i_k[0]] != '|')
 	{
 		if ((*pipe_line)[i_k[0]] == '$')
 		{
@@ -115,6 +117,7 @@ char	*ft_dollar(char **pipe_line, t_command *command)
 			res = ft_env_var(i_k[0], *pipe_line, i_k[1], command);
 			*pipe_line = ft_pipe_line_chng(pipe_line, res, i_k, command);
 			i_k[0] = i_k[0] + ft_strlen(res);
+			free(res);
 		}
 		else
 			i_k[0]++;

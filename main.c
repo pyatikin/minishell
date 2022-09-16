@@ -15,6 +15,7 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 	while (1)
 	{
 		tmp = readline(BEGIN(30, 36) MYSHELL CLOSE);
+		
 		if (!tmp)
 		{
 			printf("exit\n");

@@ -45,7 +45,7 @@ void	handler_heredoc(int s)
 	{
 		//rl_on_new_line();
 		//rl_redisplay();
-		printf("Quit\n");
+		//printf("Quit\n");
 		//rl_replace_line("", 1);
 		//rl_on_new_line();
 		//rl_redisplay();
@@ -59,7 +59,7 @@ void	handler_heredoc(int s)
 		//}
 		printf("\n");
 		rl_replace_line("", 1);
-		//rl_on_new_line();
+		rl_on_new_line();
 		rl_redisplay();
 	}
 }

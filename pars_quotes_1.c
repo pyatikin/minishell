@@ -94,22 +94,7 @@ char	*ft_without_un_quotes(char *pipe_line, char g)
 	i = 0;
 	while (pipe_line[i] && pipe_line[i] != '|')
 	{
-		if (pipe_line[i] == g && flag == 0)
-		{
-			flag = 1;
-			if (pipe_line[i - 1] && (pipe_line[i - 1] != ' ' \
-				&& pipe_line[i - 1] != '|' && pipe_line[i - 1] != '<' \
-				&& pipe_line[i - 1] != '>' && pipe_line[i - 1] != g))
-				pipe_line = ft_quotes_chng_strt(pipe_line, i);
-		}
-		else if (pipe_line[i] == g && flag == 1)
-		{
-			flag = 0;
-			if (pipe_line[i + 1] && (pipe_line[i + 1] != ' ' \
-				&& pipe_line[i + 1] != '|' && pipe_line[i + 1] != '<' \
-				&& pipe_line[i + 1] != '>' && pipe_line[i + 1] != g))
-				pipe_line = ft_quotes_chng_end(pipe_line, &i);
-		}
+		ft_wuq_dop(&pipe_line, &i, &flag, g);
 		i++;
 	}
 	return (pipe_line);

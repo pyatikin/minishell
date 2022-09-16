@@ -42,25 +42,28 @@ int	ft_chek_leng_com(char *pipe_line)
 	int	k;
 	int	flag;
 
-	k = 1;
-	flag = 0;
 	i = 0;
-	i = ft_small_stuped_bull_sheet(i, pipe_line);
-	while (pipe_line[i])
+	k = 0;
+	flag = 0;
+	while (pipe_line[i] && pipe_line[i] != '|')
 	{
 		flag = ft_flags(pipe_line, flag, i);
-		if ((pipe_line[i] == '|' || (pipe_line[i] == '<' \
-			|| pipe_line[i] == '>')) && flag == 0)
-			break ;
-		i++;
-		if (pipe_line[i] == ' ' && flag == 0)
+		if ((pipe_line[i] == '>' || pipe_line[i] == '<') && flag == 0)
 		{
-			i = ft_small_stuped_bull_sheet(i, pipe_line);
+			k--;
+			if (pipe_line[i + 1] && pipe_line[i] == pipe_line[i+1])
+				i++;
+			if (pipe_line[i + 1] && pipe_line[i + 1] == ' ')
+				k--;
+		}
+		if (pipe_line[i] != ' ' && flag == 0)
+		{
+			while (pipe_line[i] && pipe_line[i] != ' ' && pipe_line[i] != '|')
+				i++;
 			k++;
 		}
-		if (pipe_line[i - 1] && pipe_line[i - 1] == ' ' && flag == 0 && \
-			(pipe_line[i] == '|' || pipe_line[i] == '<' || pipe_line[i] == '>'))
-			k--;
+		else
+			i++;
 	}
 	return (k);
 }
@@ -100,9 +103,7 @@ void	ft_copy_pipe(char **pipe_line, t_command *command, int i, int k)
 	}
 	else
 	{
-		command->tmp = command->tmp + 2;
-		f = **pipe_line;
-		(*pipe_line)++;
+		ft_cp_dop(command, &f, pipe_line);
 		while (**pipe_line && **pipe_line != f && ++command->tmp)
 		{
 			command->simple_commands[i]->arguments[k][j] = **pipe_line;

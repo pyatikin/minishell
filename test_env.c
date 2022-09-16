@@ -199,9 +199,9 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	com = cur_command->arguments[0];
 	if (cur_command->in_file_type == read_input)
 	{
-		//set_signals(2, 0);
+		set_signals(3, 0);
 		do_read_input(ft_strdup(cur_command->in_file), cur_command);
-		//set_signals(1, 0);
+		set_signals(1, 0);
 	}
 	if (ft_strcmp(com, "echo\0") == 0 || ft_strcmp(com, "cd\0") == 0 || \
 	ft_strcmp(com, "pwd\0") == 0 || ft_strcmp(com, "export\0") == 0 || \

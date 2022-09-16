@@ -7,15 +7,7 @@ int	ft_file_fill(char **pipe_line, int l, char **file)
 
 	i = 0;
 	j = 0;
-	if (ft_quotes(*pipe_line) == 0)
-	{
-		while (i < l)
-		{
-			(*file)[i] = (*pipe_line)[i];
-			i++;
-		}
-	}
-	else
+	if (!(ft_quotes(*pipe_line) == 0))
 	{
 		j = 2;
 		(*pipe_line)++;
@@ -27,6 +19,8 @@ int	ft_file_fill(char **pipe_line, int l, char **file)
 		}
 		(*pipe_line)++;
 	}
+	else
+		ft_ff_dop(pipe_line, &i, l, file);
 	return (j);
 }
 
@@ -74,7 +68,7 @@ void	ft_file_find(char **pipe_line, t_command *command, int k)
 	{
 		while (**pipe_line == ' ' && ++command->tmp)
 			(*pipe_line)++;
-		if (**pipe_line && ((**pipe_line) == '|'))
+		if (**pipe_line && !((**pipe_line) == '<' || (**pipe_line) == '>'))
 			return ;
 		if ((*pipe_line)[0] && (*pipe_line)[1] && \
 			(*pipe_line)[0] == '>' && (*pipe_line)[1] != '>')

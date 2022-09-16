@@ -40,6 +40,7 @@ typedef struct s_command
 	int						background;
 	char					**env;
 	int						tmp;
+	int						result;
 }	t_command;
 
 typedef struct s_env_var
@@ -75,7 +76,7 @@ void			ft_pars_dop1(char **pipe_line, \
 					t_command *command, int i, int *k);
 void			ft_pars_dop2(char **pipe_line, \
 					t_command *command, int i, int *k);
-void			*ft_pars_simple(char **pipe_line, t_command *command);
+void			ft_pars_simple(char **pipe_line, t_command *command);
 void			ft_find_pipe(char *pipe_line, t_command *command);
 int				ft_quotes_for_pipe(char *pipe_line);
 int				ft_quotes(char *pipe_line);
@@ -92,6 +93,13 @@ int				ft_pwd(void);
 int				find_env(char **env, char *s);
 char			*ft_quotes_chng_end(char *pipe_line, int *i);
 char			*ft_quotes_chng_strt(char *pipe_line, int i);
+void			ft_show(t_command *command);
+void			ft_ps_dop(char **pipe_line, t_command *command, int i);
+void			ft_cl_pl(int *del, t_command *command, char **pipe_line);
+void			ft_cp_dop(t_command *command, char *f, char **pipe_line);
+void			ft_wuq_dop(char **pipe_line, int *i, int *flag, char g);
+void			ft_fev_dop(char **res, char **env, int i, int *k);
+void			ft_ff_dop(char **pipe_line, int *i, int l, char **file);
 
 char			*ft_strdup(const char *s1);
 int				ft_strcmp(const char *s1, const char *s2);
@@ -116,5 +124,6 @@ int				ft_unset(t_command *args, t_env_var *vars, t_simpleCommand *cur_command);
 int				add_new_env(t_env_var *vars, char* new);
 int				ft_cd(char **args, t_env_var *env);
 void			ft_putendl_fd(const char *s, int fd);
-void		do_read_input(char *target, t_simpleCommand *cur_command);
+void			do_read_input(char *target, t_simpleCommand *cur_command);
+int				find_and_del(t_env_var *vars, char *del);
 #endif

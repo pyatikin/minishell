@@ -21,6 +21,7 @@ t_command	*zero_struk_command(char *pipe_line)
 	command->number_of_simple_commands = 0;
 	command->background = 0;
 	command->tmp = 0;
+	command->result = 29;
 	return (command);
 }
 
