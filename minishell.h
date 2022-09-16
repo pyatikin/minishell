@@ -1,5 +1,10 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
+# ifdef __APPLE__
+#  define MAC_OS 1
+# else
+#  define MAC_OS 0
+# endif
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>

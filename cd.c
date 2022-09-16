@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void	print_error(char **args)
+void	print_error(char **args)
 {
 	ft_putstr_fd("cd: ", 2);
 	if (args[2])
@@ -13,7 +13,7 @@ static void	print_error(char **args)
 	ft_putendl_fd(args[1], 2);
 }
 
-char *get_env_value(char *env)
+char	*get_env_value(char *env)
 {
 	int	i;
 	char *tmp;
@@ -25,7 +25,7 @@ char *get_env_value(char *env)
 	return (tmp);
 }
 
-static int	update_oldpwd(t_env_var *env)
+int	update_oldpwd(t_env_var *env)
 {
 	char	cwd[PATH_MAX];
 	char	*oldpwd;
@@ -45,7 +45,7 @@ static int	update_oldpwd(t_env_var *env)
 	return (0);
 }
 
-static int	go_to_path(int option, t_env_var *env)
+int	go_to_path(int option, t_env_var *env)
 {
 	int		ret;
 	int		env_path;

@@ -1,3 +1,4 @@
+#include "minishell.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,26 +42,18 @@ void	usual_handler(int s)
 
 void	handler_heredoc(int s)
 {
-	if (s == SIGQUIT)
+	if (s == SIGQUIT && MAC_OS)
 	{
-		//rl_on_new_line();
-		//rl_redisplay();
-		//printf("Quit\n");
-		//rl_replace_line("", 1);
-		//rl_on_new_line();
-		//rl_redisplay();
+		rl_on_new_line();
+		rl_redisplay();
 	}
 	else if (s == SIGINT)
 	{
-		//if (MAC_OS)
-		//{
-			//rl_on_new_line();
-			//rl_redisplay();
-		//}
-		printf("\n");
-		rl_replace_line("", 1);
-		rl_on_new_line();
-		rl_redisplay();
+		if (MAC_OS)
+		{
+			rl_on_new_line();
+			rl_redisplay();
+		}
 	}
 }
 
