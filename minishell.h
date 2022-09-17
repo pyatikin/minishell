@@ -57,6 +57,8 @@ typedef struct s_env_var
 	int		status;
 }	t_env_var;
 
+short	g_interrupt;
+
 int				args_size(char **args);
 int				ft_echo(char **args);
 int				ft_dollar_leng(int i, char *pipe_line);
@@ -119,7 +121,7 @@ int				escaped(char *cmd, int i);
 int				check_cmd(char *cmd);
 void			print_err(char *main, char	*word, char ch);
 char			*ft_chng_line(char **cmd);
-int				start_path(t_command *args, t_env_var *vars);
+int				start_path(t_env_var *vars);
 int				ft_env(t_env_var *vars, t_simpleCommand *cur_command);
 int				ft_export(t_env_var *vars, t_simpleCommand *cur_command);
 int				ft_clean(t_command *args, t_env_var *vars);
@@ -131,4 +133,5 @@ int				ft_cd(char **args, t_env_var *env);
 void			ft_putendl_fd(const char *s, int fd);
 void			do_read_input(char *target, t_simpleCommand *cur_command);
 int				find_and_del(t_env_var *vars, char *del);
+void			echo_ctl(char on);
 #endif

@@ -17,9 +17,9 @@ SRCS = main.c ft_strlen.c check_cmd.c print_error.c\
 
 OBJS = $(SRCS:%.c=%.o)
 
-CC = gcc
-CFLAGS =
-CLIBFLAGS = -lncurses -lpthread -pthread
+CC = cc
+CFLAGS = -lncurses -lpthread -pthread
+CLIBFLAGS = 
 
 CL_BOLD	 = \e[1m
 CL_DIM	= \e[2m

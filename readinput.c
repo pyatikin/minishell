@@ -15,6 +15,13 @@
 //		free(tmp);
 //	}
 //}
+int	check_g_interrupt(void)
+{
+	if (g_interrupt)
+		rl_done = true;
+	return (0);
+}
+
 void pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
 {
 	int fd[2];
@@ -44,10 +51,11 @@ void	do_read_input(char *target, t_simpleCommand *cur_command)
 
 	readline_res = NULL;
 	redirect = NULL;
-	while (1)
+	rl_event_hook = check_g_interrupt;
+	while (target && g_interrupt == false)
 	{
 		readline_res = readline(">");
-		if (!readline_res)
+		if (!readline_res && g_interrupt == false)
 			print_err(MSG_ERR_HEREDOC, target, 0);
 		//printf("1read = %s\ttarget = %s\t cmp = %d\n", readline_res, target, ft_strcmp(readline_res, target));
 		if (ft_strcmp(readline_res, target) == 0)

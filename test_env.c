@@ -97,7 +97,7 @@ char	*check_exec(char *dir, char *cmd)
 	return (NULL);
 }
 
-int	do_db_redirections(t_command *args, int i, t_env_var *vars)
+int	do_db_redirections(t_command *args, int i)
 {
 	//printf("NUM = %d", args->number_of_simple_commands);
 	if (!(args->simple_commands[i]->out_file == NULL && \
@@ -112,7 +112,7 @@ int	do_db_redirections(t_command *args, int i, t_env_var *vars)
 	return (0);
 }
 
-int	get_db_redirections(t_command *args, int i, t_env_var *vars)
+int	get_db_redirections(t_command *args, int i)
 {
 	if (i > 0 && args->simple_commands[i - 1]->out_file == NULL && \
 		args->simple_commands[i]->in_file == NULL)
@@ -126,8 +126,6 @@ int	get_db_redirections(t_command *args, int i, t_env_var *vars)
 
 int	do_redirections(t_command *args, int i, t_env_var *vars)
 {
-	int	in;
-	int	out;
 	//TODO IN < and << 
 	if (args->simple_commands[i]->in_file_type == 1)
 		args->simple_commands[i]->in_fd = open(args->simple_commands[i]->in_file, O_RDONLY | O_CREAT);
@@ -169,6 +167,7 @@ int execute_command(char	*tmp, char **arg, t_env_var *vars)
 	//printf("STATUS = %d\n", WEXITSTATUS (status));
 	//rl_on_new_line();
 	//perror("execve");
+	return (0);
 }
 
 int	build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_command)
@@ -187,11 +186,11 @@ int	build_in(char *com, t_env_var *vars,t_command *args, t_simpleCommand *cur_co
 		return (ft_env(vars, cur_command));
 	else if (ft_strcmp(com, "exit\0") == 0)
 		return (0);
+	return (0);
 }
 int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args)
 {
 	char		*com;
-	struct stat	sb;
 	char		*tmp;
 	int			k;
 
@@ -213,7 +212,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	}
 	while (vars->path[k])
 	{
-		if (tmp = check_exec(vars->path[k], cur_command->arguments[0]))
+		if ((tmp = check_exec(vars->path[k], cur_command->arguments[0])))
 		{
 			//return (3); //remake
 			//execve(tmp, args->simple_commands[0]->arguments, vars->env);
@@ -223,7 +222,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 		}
 		k++;
 	}
-	if (tmp = check_exec(NULL, cur_command->arguments[0]))
+	if ((tmp = check_exec(NULL, cur_command->arguments[0])))
 	{
 		//return (3); //remake
 		//execve(tmp, args->simple_commands[0]->arguments, vars->env);
@@ -235,7 +234,7 @@ int	check_command(t_simpleCommand *cur_command, t_env_var *vars, t_command *args
 	return (1);
 }
 
-int	back_redirections(t_command *args, int i, t_env_var *env)
+int	back_redirections(t_env_var *env)
 {
 	dup2(env->stdin_fd, STDIN_FILENO);
 	dup2(env->stdout_fd, STDOUT_FILENO);
@@ -252,13 +251,13 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		do_redirections(args, i, vars);
 		//printf("fd[0] = %d,\t fd[1] = %d", args->simple_commands[i]->db_fd[0], args->simple_commands[i]->db_fd[1]);
 		//printf("QQQQQQQQQ = %p", args->simple_commands[i+1]);	
-		do_db_redirections(args, i, vars);
-		get_db_redirections(args, i, vars);
+		do_db_redirections(args, i);
+		get_db_redirections(args, i);
 		//printf("in = %d, out = %d\n", args->simple_commands[i]->in_fd, args->simple_commands[i]->out_fd);
 		//set_signals(3, 1);
 		check_command(args->simple_commands[i], vars, args);
 		//set_signals(1, 0);
-		back_redirections(args, i, vars);
+		back_redirections(vars);
 		//args->cmd = readline(BEGIN(30, 36) MYSHELL CLOSE);
 		//if (!args->cmd)
 		//{
@@ -287,9 +286,10 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		//}
 		i++;
 	}
+	return (0);
 }
 
-int	start_path(t_command *args, t_env_var *vars)
+int	start_path(t_env_var *vars)
 {
 	
 	//printf("%s\n", (vars->env[find_env(vars->env, "PATH")]));
@@ -310,4 +310,5 @@ int	start_path(t_command *args, t_env_var *vars)
 	//}
 	//exec_loop(args, vars);
 	//printf("NUM = %d", args->number_of_simple_commands);
+	return (0);
 }

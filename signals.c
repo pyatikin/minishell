@@ -1,10 +1,6 @@
 #include "minishell.h"
 #include <signal.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <termios.h>
-#include <readline/readline.h>
 
 void	echo_ctl(char on)
 {
@@ -20,15 +16,10 @@ void	echo_ctl(char on)
 
 void	usual_handler(int s)
 {
-	//rl_on_new_line();
-	//printf("\n");
-	//rl_replace_line("", 1);
-	////rl_on_new_line();
-	//rl_redisplay();
-	if (s == SIGQUIT)
+	if (s == SIGQUIT && MAC_OS)
 	{
-		//rl_on_new_line();
-		//rl_redisplay();
+		rl_on_new_line();
+		rl_redisplay();
 	}
 	else if (s == SIGINT)
 	{
@@ -49,6 +40,7 @@ void	handler_heredoc(int s)
 	}
 	else if (s == SIGINT)
 	{
+		g_interrupt = 1;
 		if (MAC_OS)
 		{
 			rl_on_new_line();
@@ -59,8 +51,17 @@ void	handler_heredoc(int s)
 
 void	no_handler(int s) //TODO проверить в чек листе
 {
-	//rl_on_new_line();
-	//rl_redisplay();
+	if (s == SIGQUIT || s == SIGINT)
+	{
+	}
+}
+
+void	other_handler(int s)
+{
+	if (s == SIGQUIT)
+		printf("Quit: %d\n", s);
+	else if (s == SIGINT)
+		printf("\n");
 }
 
 void	set_signals(int handler, int ctl)
@@ -86,7 +87,7 @@ void	set_signals(int handler, int ctl)
 	else if (handler == 3)
 		h_fun = &handler_heredoc;
 	else
-		h_fun = &no_handler;
+		h_fun = &other_handler;
 	echo_ctl(ctl);
 	signal(SIGINT, h_fun);
 	signal(SIGQUIT, h_fun);

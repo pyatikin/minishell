@@ -14,6 +14,7 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 {
 	while (1)
 	{
+		
 		tmp = readline(BEGIN(30, 36) MYSHELL CLOSE);
 		
 		if (!tmp)
@@ -23,6 +24,7 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 		}
 		if (ft_strlen(tmp))
 			add_history(tmp);
+		set_signals(0, 1);
 		tmp = ft_chng_line(&tmp);
 		if (check_cmd((tmp)) != 0)
 			continue;
@@ -30,15 +32,17 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 		
 		args = parsbody(tmp, vars->env);
 		free(tmp);
-		start_path(args, vars);
+		start_path(vars);
 		//printf("|%s|\n", args->cmd);
 		exec_loop(args, vars);
+		set_signals(1, 0);
 		ft_clean(args, vars);
+		g_interrupt = 0;
 	}
 	
 }
 
-int dup_env(t_env_var *vars, char **env)
+void dup_env(t_env_var *vars, char **env)
 {
 	int	i;
 	int	c;
@@ -51,10 +55,10 @@ int dup_env(t_env_var *vars, char **env)
 	vars->env[c] = NULL;
 	i = -1;
 	while(env[++i])
-		vars->env[i] = ft_strdup(env[i]);	
+		vars->env[i] = ft_strdup(env[i]);
 }
 
-int preprocess(t_env_var *vars, char **env)
+void preprocess(t_env_var *vars, char **env)
 {
 	
 	dup_env(vars, env);
@@ -67,13 +71,14 @@ int preprocess(t_env_var *vars, char **env)
 int	main(int argc, char **argv, char **env)
 {
 	t_command	args;
-	int			res;
+	//int			res;
 	t_env_var	vars;
 	char		*tmp;
 
-
-	set_signals(1, 0);
+	tmp = NULL;
+	g_interrupt = 0;
 	preprocess(&vars, env);
+	set_signals(1, 0);
 	//printf("P = %p\n", vars.env);
 
 	//start_path(&args, env, &vars);
@@ -94,7 +99,7 @@ int	main(int argc, char **argv, char **env)
 		//args.res = get_env_value("LES", args.env);
 		//res = ft_atoi(args.res);
 		//free_args(&args, true);
-		//echo_ctl(1);
+		echo_ctl(1);
 		return (0);
 	}
     printf("ERROR ARGS");
