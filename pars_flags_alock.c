@@ -51,7 +51,7 @@ int	ft_chek_leng_com(char *pipe_line)
 		if ((pipe_line[i] == '>' || pipe_line[i] == '<') && flag == 0)
 		{
 			k--;
-			if (pipe_line[i + 1] && pipe_line[i] == pipe_line[i+1])
+			if (pipe_line[i + 1] && pipe_line[i] == pipe_line[i + 1])
 				i++;
 			if (pipe_line[i + 1] && pipe_line[i + 1] == ' ')
 				k--;

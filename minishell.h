@@ -17,9 +17,8 @@
 #include <readline/history.h>
 #include <errno.h>
 
-#define CLOSE "\001\033[0m\002"                 // Закрыть все свойства
-#define BLOD  "\001\033[1m\002"                 // Подчеркнуть, жирным шрифтом, выделить
-#define BEGIN(x,y) "\001\033["#x";"#y"m\002"    // x: background, y: foreground
+#define CLOSE "\001\033[0m\002"
+#define BEGIN(x,y) "\001\033["#x";"#y"m\002"
 #define MYSHELL "Myshell > "
 
 typedef struct s_simpleCommand
@@ -107,6 +106,23 @@ void			ft_cp_dop(t_command *command, char *f, char **pipe_line);
 void			ft_wuq_dop(char **pipe_line, int *i, int *flag, char g);
 void			ft_fev_dop(char **res, char **env, int i, int *k);
 void			ft_ff_dop(char **pipe_line, int *i, int l, char **file);
+char			escaped_eof(char *cmd);
+char			has_opened_quotes(char *cmd, int start, int end);
+int				has_opened_parenth(char *cmd, char parenth, \
+					char opened_quote, int i);
+char			more_two_sequenses_controls(char *cmd, char \
+					opened_qoute, int i, int j);
+int				is_space(char *cmd, int i);
+int				build_in(char *com, t_env_var *vars, \
+					t_command *args, t_simpleCommand *cur_command);
+int				execute_command(char *tmp, char **arg, t_env_var *vars);
+int				do_redirections(t_command *args, int i, t_env_var *vars);
+int				get_db_redirections(t_command *args, int i);
+int				do_db_redirections(t_command *args, int i);
+int				count_colomns(char *s);
+char			*check_exec(char *dir, char *cmd);
+void			make_path_vector(char *path, char **path_vector, int l);
+char			*get_env_value(char *env);
 
 char			*ft_strdup(const char *s1);
 int				ft_strcmp(const char *s1, const char *s2);
@@ -115,8 +131,9 @@ size_t			ft_strlen(const char *s);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);
 int				ft_isalnum(int c);
+void			no_handler(int s);
 
-void			set_signals(int handler, int ctl);
+void			set_signals(int handler, int ctl, t_env_var *vars);
 int				escaped(char *cmd, int i);
 int				check_cmd(char *cmd);
 void			print_err(char *main, char	*word, char ch);
@@ -133,5 +150,5 @@ int				ft_cd(char **args, t_env_var *env);
 void			ft_putendl_fd(const char *s, int fd);
 void			do_read_input(char *target, t_simpleCommand *cur_command);
 int				find_and_del(t_env_var *vars, char *del);
-void			echo_ctl(char on);
+void			echo_ctl(char on, t_env_var *vars);
 #endif

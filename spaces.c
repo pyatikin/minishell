@@ -4,45 +4,14 @@
 #include <readline/history.h>
 #include "minishell.h"
 
-int	is_space(char *cmd, int i)
-{
-	if (cmd[i] == ' ')
-		return (1);
-	return (0);
-}
-
-//int pass_quotes(char **cmd)
-//{
-//	char	type;
-//
-//	type = NULL;
-//	if(**cmd == NULL)
-//		return (-1);
-//	if(**cmd == single_quote)
-//		type = single_quote;
-//	if (/* condition */)
-//	{
-//		/* code */
-//	}
-//	
-//}
-
-void quote_check(char *cmd, int *start, char **quote_type)
+void	quote_check(char *cmd, int *start, char **quote_type)
 {
 	if (cmd[*start] == quote || cmd[*start] == single_quote)
 	{
 		if (*quote_type == NULL)
-		{
-			//if (escaped(cmd, *start) == false)
-				*quote_type = &cmd[*start];
-		}
+			*quote_type = &cmd[*start];
 		else if (cmd[*start] == **quote_type)
-		{
-			//if (**quote_type == single_quote)
-			//	*quote_type = NULL;
-			//else if (escaped(cmd, *start) == false)
-				*quote_type = NULL;
-		}
+			*quote_type = NULL;
 	}
 	(*start)++;
 }

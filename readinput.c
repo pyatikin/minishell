@@ -4,17 +4,6 @@
 #include "error_msgs.h"
 #include "minishell.h"
 
-//static inline void	parse_read_input_target(t_redirect *redirect, char **env)
-//{
-//	char	*tmp;
-//
-//	if (redirect->target)
-//	{
-//		tmp = redirect->target;
-//		redirect->target = parse_cmd(redirect->target, env, false);
-//		free(tmp);
-//	}
-//}
 int	check_g_interrupt(void)
 {
 	if (g_interrupt)
@@ -22,9 +11,10 @@ int	check_g_interrupt(void)
 	return (0);
 }
 
-void pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
+void	pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
 {
-	int fd[2];
+	int	fd[2];
+
 	pipe(fd);
 	ft_putstr_fd(redirect, fd[1]);
 	close(fd[1]);
@@ -57,20 +47,16 @@ void	do_read_input(char *target, t_simpleCommand *cur_command)
 		readline_res = readline(">");
 		if (!readline_res && g_interrupt == false)
 			print_err(MSG_ERR_HEREDOC, target, 0);
-		//printf("1read = %s\ttarget = %s\t cmp = %d\n", readline_res, target, ft_strcmp(readline_res, target));
 		if (ft_strcmp(readline_res, target) == 0)
 			break ;
 		if (readline_res)
 			do_update_target(&redirect, readline_res);
 		free(readline_res);
 		readline_res = NULL;
-		
 	}
 	rl_event_hook = NULL;
 	pipe_for_read_input(redirect, cur_command);
 	free(target);
 	free(readline_res);
 	free(redirect);
-	
-	//parse_read_input_target(redirect);
 }

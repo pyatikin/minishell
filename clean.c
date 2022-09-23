@@ -1,24 +1,5 @@
 #include "minishell.h"
 
-//int	main(int argc, char **argv, char **env)
-//{
-//	t_command	*command;
-//
-//	command = parsbody("kjh \"kjh uou kjh\" >\"jkl\" | jhjhjjhjjh| <<lkji lk", env);
-//	ft_clean(command);
-//	printf("\n\n\n");
-//	command = parsbody (\
-//		"l\"$cdsa\"md $SHLVL <<\"kljh\" l\'$PWD\' >\"jkl\" e'c'ho| $SHELL <<jlk \"$?\""\
-//		, env);
-//	ft_clean(command);
-//	printf("\n\n\n");
-//	command = parsbody ("\"$!!\"", env);
-//	ft_clean(command);
-//	return (0);
-//}
-
-
-
 void	ft_show(t_command *command)
 {
 	int	i;

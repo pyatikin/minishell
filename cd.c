@@ -13,18 +13,6 @@ void	print_error(char **args)
 	ft_putendl_fd(args[1], 2);
 }
 
-char	*get_env_value(char *env)
-{
-	int	i;
-	char *tmp;
-
-	i = 0;
-	while(env[i] && env[i] != '=')
-		i++;
-	tmp = strdup(&env[i + 1]);
-	return (tmp);
-}
-
 int	update_oldpwd(t_env_var *env)
 {
 	char	cwd[PATH_MAX];
@@ -32,7 +20,8 @@ int	update_oldpwd(t_env_var *env)
 
 	if (getcwd(cwd, PATH_MAX) == NULL)
 		return (1);
-	if (!(oldpwd = ft_strjoin("OLDPWD=", cwd)))
+	oldpwd = ft_strjoin("OLDPWD=", cwd);
+	if (!(oldpwd))
 		return (1);
 	if (find_env(env->env, "OLDPWD") == -1)
 		add_new_env(env, oldpwd);
@@ -45,6 +34,14 @@ int	update_oldpwd(t_env_var *env)
 	return (0);
 }
 
+void	gtp_dop(t_env_var *env, int *env_path)
+{
+	update_oldpwd(env);
+	(*env_path) = find_env(env->env, "HOME\0");
+	if ((*env_path) == -1)
+		ft_putendl_fd("minishell : cd: HOME not set", 2);
+}
+
 int	go_to_path(int option, t_env_var *env)
 {
 	int		ret;
@@ -54,10 +51,7 @@ int	go_to_path(int option, t_env_var *env)
 	env_path = -1;
 	if (option == 0)
 	{
-		update_oldpwd(env);
-		env_path = find_env(env->env, "HOME\0");
-		if (env_path == -1)
-			ft_putendl_fd("minishell : cd: HOME not set", 2);
+		gtp_dop(env, &env_path);
 		if (env_path == -1)
 			return (1);
 	}
@@ -79,6 +73,8 @@ int	go_to_path(int option, t_env_var *env)
 int	ft_cd(char **args, t_env_var *env)
 {
 	int		cd_ret;
+
+	cd_ret = 0;
 	if (args[1] == NULL)
 		return (go_to_path(0, env));
 	if (ft_strcmp(args[1], "-") == 0)
