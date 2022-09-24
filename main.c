@@ -22,13 +22,14 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 		tmp = ft_chng_line(&tmp);
 		if (check_cmd((tmp)) != 0)
 			continue ;
-		args = parsbody(tmp, vars->env);
+		args = parsbody(tmp, vars);
 		free(tmp);
 		start_path(vars);
 		exec_loop(args, vars);
 		set_signals(1, 0, vars);
 		ft_clean(args, vars);
 		g_interrupt = 0;
+		//printf("RES = %d", vars->status);
 	}
 }
 
@@ -51,6 +52,7 @@ void	dup_env(t_env_var *vars, char **env)
 void	preprocess(t_env_var *vars, char **env)
 {
 	dup_env(vars, env);
+	vars->status = 0;
 	vars->stdin_fd = dup(STDIN_FILENO);
 	vars->stdout_fd = dup(STDOUT_FILENO);
 }

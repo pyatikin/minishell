@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-void	print_err(char *main, char	*word, char ch)
+int	print_err(char *main, char	*word, char ch)
 {
 	int	stdout;
 
@@ -16,4 +16,5 @@ void	print_err(char *main, char	*word, char ch)
 		printf("%s", main);
 	dup2(stdout, STDOUT_FILENO);
 	close(stdout);
+	return (1);
 }

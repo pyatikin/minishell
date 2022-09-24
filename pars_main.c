@@ -1,17 +1,17 @@
 #include "minishell.h"
 
-t_command	*parsbody(char *pipe_line, char **env)
+t_command	*parsbody(char *pipe_line, t_env_var *vars)
 {
 	int			i;
 	t_command	*command;
 	char		*pl;
 
 	i = 0;
-	command = zero_struk_command(pipe_line);
+	command = zero_struk_command(pipe_line, vars);
 	ft_find_pipe(pipe_line, command);
 	command->simple_commands = (t_simpleCommand **)malloc(sizeof
 			(t_simpleCommand *) *(command->number_of_simple_commands + 1));
-	command->env = env;
+	command->env = vars->env;
 	while (i < command->number_of_simple_commands)
 	{
 		command->simple_commands[i] = zero_struk_simple();
@@ -20,7 +20,7 @@ t_command	*parsbody(char *pipe_line, char **env)
 	command->simple_commands[command->number_of_simple_commands] = NULL;
 	pl = ft_strdup(pipe_line);
 	ft_pars_simple(&pl, command);
-	ft_show(command);
+	//ft_show(command);
 	return (command);
 }
 

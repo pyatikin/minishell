@@ -65,10 +65,19 @@ int	execute_command(char *tmp, char **arg, t_env_var *vars)
 
 	pid = fork();
 	if (pid == 0)
-		vars->status = execve(tmp, arg, vars->env);
+		execve(tmp, arg, vars->env);
 	else if (pid < 0)
 		return (-1);
 	waitpid(pid, &status, 0);
+	if (status != 0)
+	{
+		if (WIFEXITED(status))
+			vars->status = (WEXITSTATUS(status));
+		else if (WIFSIGNALED(status))
+			vars->status = (WTERMSIG(status));
+	}
+	else
+		vars->status = 0;
 	return (0);
 }
 
@@ -80,7 +89,7 @@ int	build_in(
 	else if (ft_strcmp(com, "cd\0") == 0)
 		return (ft_cd(cur_command->arguments, vars));
 	else if (ft_strcmp(com, "pwd\0") == 0)
-		return (ft_pwd());
+		return (ft_pwd(vars));
 	else if (ft_strcmp(com, "export\0") == 0)
 		return (ft_export(vars, cur_command));
 	else if (ft_strcmp(com, "unset\0") == 0)

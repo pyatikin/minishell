@@ -70,7 +70,7 @@ char	more_two_sequenses_controls(
 			j = i;
 			while (cmd[i + 1] == cmd[j])
 				i++;
-			if (i - j > 1)
+			if (i - j > 0)
 				return (cmd[i]);
 		}
 		i++;

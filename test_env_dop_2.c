@@ -49,7 +49,9 @@ int	check_command(
 		free(tmp);
 		return (0);
 	}
-	printf("%s: command not found\n", com);
+	ft_putstr_fd(com, vars->stdout_fd);
+	ft_putstr_fd(": command not found\n", vars->stdout_fd);
+	vars->status = 127;
 	return (1);
 }
 
@@ -72,6 +74,8 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		get_db_redirections(args, i);
 		check_command(args->simple_commands[i], vars, args);
 		back_redirections(vars);
+		if (vars->status)
+			break ;
 		i++;
 	}
 	return (0);
@@ -79,6 +83,7 @@ int	exec_loop(t_command *args, t_env_var *vars)
 
 int	start_path(t_env_var *vars)
 {
+	vars->status = 0;
 	if (find_env(vars->env, "PATH") != -1)
 	{
 		vars->path = malloc(sizeof(char *) * \

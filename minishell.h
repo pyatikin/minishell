@@ -77,7 +77,7 @@ int				ft_alloc_for_pattern(int n, char *pipe_line, \
 					t_command *command);
 void			ft_copy_pipe(char **pipe_line, \
 					t_command *command, int i, int k);
-t_command		*parsbody(char *pipe_line, char **env);
+t_command		*parsbody(char *pipe_line, t_env_var *vars);
 void			ft_pars_dop1(char **pipe_line, \
 					t_command *command, int i, int *k);
 void			ft_pars_dop2(char **pipe_line, \
@@ -90,12 +90,12 @@ int				deteck_flag(int k, int l, int *count);
 void			ft_alloc_dup(int n, char **pipe_line, int *j, \
 					t_command *command);
 char			*ft_without_un_quotes(char *pipe_line, char q);
-t_command		*zero_struk_command(char *pipe_line);
+t_command		*zero_struk_command(char *pipe_line, t_env_var *vars);
 t_simpleCommand	*zero_struk_simple(void);
 void			ft_zero_var(int *i, int *k, int *m, char **res);
 int				ft_small_stuped_bull_sheet(int i, char *pipe_line);
 void			fkng_bll_shit(char **pipe_line, int *j);
-int				ft_pwd(void);
+int				ft_pwd(t_env_var *vars);
 int				find_env(char **env, char *s);
 char			*ft_quotes_chng_end(char *pipe_line, int *i);
 char			*ft_quotes_chng_strt(char *pipe_line, int i);
@@ -136,7 +136,7 @@ void			no_handler(int s);
 void			set_signals(int handler, int ctl, t_env_var *vars);
 int				escaped(char *cmd, int i);
 int				check_cmd(char *cmd);
-void			print_err(char *main, char	*word, char ch);
+int			print_err(char *main, char	*word, char ch);
 char			*ft_chng_line(char **cmd);
 int				start_path(t_env_var *vars);
 int				ft_env(t_env_var *vars, t_simpleCommand *cur_command);
@@ -151,4 +151,7 @@ void			ft_putendl_fd(const char *s, int fd);
 void			do_read_input(char *target, t_simpleCommand *cur_command);
 int				find_and_del(t_env_var *vars, char *del);
 void			echo_ctl(char on, t_env_var *vars);
+void			ft_z_p_a_r(int *i, int *f, int *count, char *redirect_type);
+int				par_dop_if(char *cmd, int *i, char *redirect_type, int *count);
+int				check_cmd_sequenses(char *cmd);
 #endif

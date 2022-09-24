@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	ft_pwd(void)
+int	ft_pwd(t_env_var *vars)
 {
 	char	cwd[PATH_MAX];
 	int		i;
@@ -16,8 +16,12 @@ int	ft_pwd(void)
 			i++;
 		}
 		write(1, "\n", 1);
+		vars->status = 0;
 		return (0);
 	}
 	else
+	{
+		vars->status = 1;
 		return (-1);
+	}
 }
