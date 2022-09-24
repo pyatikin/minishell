@@ -4,13 +4,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#define MYSHELL "Myshell > "
-
 int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 {
 	while (1)
 	{
-		tmp = readline(BEGIN(30, 36) MYSHELL CLOSE);
+		tmp = readline(MYSHELL);
 		if (!tmp)
 		{
 			printf("exit\n");
@@ -29,7 +27,6 @@ int	input_loop(t_command *args, t_env_var *vars, char *tmp)
 		set_signals(1, 0, vars);
 		ft_clean(args, vars);
 		g_interrupt = 0;
-		//printf("RES = %d", vars->status);
 	}
 }
 
@@ -73,7 +70,7 @@ int	main(int argc, char **argv, char **env)
 		input_loop(&args, &vars, tmp);
 		rl_clear_history();
 		last_clean(&args, &vars);
-		//echo_ctl(1);
+		echo_ctl(1, 0);
 		return (0);
 	}
 	printf("ERROR ARGS");

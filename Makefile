@@ -4,7 +4,7 @@ SRCS = main.c ft_strlen.c check_cmd.c print_error.c spaces_dop.c\
 		ft_strcmp.c spaces.c signals.c check_cmd_dop.c check_cmd_dop2.c cd_dop.c\
 		test_env.c ft_substr.c ft_strjoin.c signals_dop.c test_env_dop_2.c\
 		ft_strlcpy.c ft_strdup.c ft_strncmp.c ft_memset.c test_env_dop_1.c\
-		env.c export.c exit.c unset.c cd.c ft_putstr_fd.c ft_putendl_fd.c\
+		env.c export.c export_dop.c exit.c unset.c cd.c ft_putstr_fd.c ft_putendl_fd.c\
 		ft_putchar_fd.c ft_isalnum.c readinput.c ft_strjoinchr.c ft_memcpy.c\
 		\
 		echo.c pwd.c pars_dollar.c pars_file.c \

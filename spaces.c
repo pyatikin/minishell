@@ -98,7 +98,7 @@ char	*ft_chng_line(char **cmd)
 	int		len;
 	char	*new_cmd;
 
-	if(!cmd || !*cmd || !**cmd)
+	if (!cmd || !*cmd || !**cmd)
 		return (NULL);
 	len = count_true_spaces(*cmd, 0);
 	new_cmd = malloc(sizeof(char) * (len + 1));

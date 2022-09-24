@@ -66,11 +66,8 @@ char	*check_exec(char *dir, char *cmd)
 	all = NULL;
 	if (dir != NULL && (cmd[0] == '/' || cmd[0] == '.'))
 		return (NULL);
-	if (dir)
-	{
-		if (dir[ft_strlen(dir)] != '/')
-			dir = ft_strjoin(dir, "/\0");
-	}
+	if (dir && dir[ft_strlen(dir)] != '/')
+		dir = ft_strjoin(dir, "/\0");
 	all = ft_strjoin(dir, cmd);
 	if (ft_strcmp(dir, "/") != 0)
 		free(dir);
@@ -87,4 +84,21 @@ char	*check_exec(char *dir, char *cmd)
 	}
 	free(all);
 	return (NULL);
+}
+
+int	start_path(t_env_var *vars)
+{
+	vars->status = 0;
+	if (find_env(vars->env, "PATH") != -1)
+	{
+		vars->path = malloc(sizeof(char *) * \
+		(count_colomns(vars->env[find_env(vars->env, "PATH")]) + 1));
+		vars->path[count_colomns(vars->env[find_env(vars->env, \
+		"PATH")])] = NULL;
+		make_path_vector(vars->env[find_env(vars->env, "PATH")] + 5, \
+		vars->path, count_colomns(vars->env[find_env(vars->env, "PATH")]));
+	}
+	else
+		vars->path = calloc(sizeof(char *), 1);
+	return (0);
 }

@@ -2,16 +2,16 @@
 #include <signal.h>
 #include <termios.h>
 
-void	echo_ctl(char on, t_env_var *vars)
+void	echo_ctl(char on, int fd)
 {
 	struct termios	tstate;
 
-	tcgetattr(vars->stdin_fd, &tstate);
+	tcgetattr(fd, &tstate);
 	if (on)
 		tstate.c_lflag |= ECHOCTL;
 	else
 		tstate.c_lflag &= ~ECHOCTL;
-	tcsetattr(vars->stdin_fd, TCSANOW, &tstate);
+	tcsetattr(fd, TCSANOW, &tstate);
 }
 
 void	usual_handler(int s)
@@ -69,7 +69,7 @@ void	set_signals(int handler, int ctl, t_env_var *vars)
 		h_fun = &handler_heredoc;
 	else
 		h_fun = &other_handler;
-	echo_ctl(ctl, vars);
+	echo_ctl(ctl, vars->stdin_fd);
 	signal(SIGINT, h_fun);
 	signal(SIGQUIT, h_fun);
 }
