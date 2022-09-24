@@ -9,7 +9,7 @@
 #include "minishell.h"
 
 int	check_command_extra(t_simpleCommand *cur_command,
-		t_env_var *vars, char **com, t_command *args)
+		t_env_var *vars, char **com)
 {
 	*com = cur_command->arguments[0];
 	if (cur_command->in_file_type == read_input)
@@ -23,7 +23,7 @@ int	check_command_extra(t_simpleCommand *cur_command,
 	ft_strcmp(*com, "unset\0") == 0 || ft_strcmp(*com, "env\0") == 0 || \
 	ft_strcmp(*com, "exit\0") == 0)
 	{
-		build_in(*com, vars, args, cur_command);
+		build_in(*com, vars, cur_command);
 		return (1);
 	}
 	return (0);
@@ -38,14 +38,14 @@ int	ret_func(char *com, t_env_var *vars)
 }
 
 int	check_command(
-	t_simpleCommand *cur_command, t_env_var *vars, t_command *args)
+	t_simpleCommand *cur_command, t_env_var *vars)
 {
 	char		*com;
 	char		*tmp;
 	int			k;
 
 	k = -1;
-	if (check_command_extra(cur_command, vars, &com, args))
+	if (check_command_extra(cur_command, vars, &com))
 		return (0);
 	while (vars->path[++k])
 	{
@@ -84,7 +84,7 @@ int	exec_loop(t_command *args, t_env_var *vars)
 		do_redirections(args, i, vars);
 		do_db_redirections(args, i);
 		get_db_redirections(args, i);
-		check_command(args->simple_commands[i], vars, args);
+		check_command(args->simple_commands[i], vars);
 		back_redirections(vars);
 		if (vars->status)
 			break ;

@@ -18,7 +18,7 @@ SRCS = main.c ft_strlen.c check_cmd.c print_error.c spaces_dop.c\
 OBJS = $(SRCS:%.c=%.o)
 
 CC = cc
-CFLAGS = -lncurses -lpthread -pthread
+CFLAGS = -lncurses -lpthread -pthread 
 CLIBFLAGS = 
 
 CL_BOLD	 = \e[1m

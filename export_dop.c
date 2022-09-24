@@ -27,7 +27,7 @@ int	print_export(t_env_var *var)
 	return (0);
 }
 
-int	add_new_env(t_env_var *vars, char *new)
+void	add_new_env(t_env_var *vars, char *new)
 {
 	int		i;
 	int		c;

@@ -71,8 +71,6 @@ void	check_export(t_env_var *vars, t_simpleCommand *cur_command)
 
 int	ft_export(t_env_var *vars, t_simpleCommand *cur_command)
 {
-	int	i;
-
 	if (cur_command->number_of_arguments == 1)
 	{
 		print_export(vars);

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	find_and_del(t_env_var *vars, char *del)
+void	find_and_del(t_env_var *vars, char *del)
 {
 	int		i;
 	int		c;
@@ -26,7 +26,7 @@ int	find_and_del(t_env_var *vars, char *del)
 	vars->env = tmp;
 }
 
-int	ft_unset(t_command *args, t_env_var *vars, t_simpleCommand *cur_command)
+int	ft_unset(t_env_var *vars, t_simpleCommand *cur_command)
 {
 	if (cur_command->number_of_arguments != 2)
 		return (0);

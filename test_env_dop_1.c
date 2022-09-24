@@ -82,7 +82,7 @@ int	execute_command(char *tmp, char **arg, t_env_var *vars)
 }
 
 int	build_in(
-	char *com, t_env_var *vars, t_command *args, t_simpleCommand *cur_command)
+	char *com, t_env_var *vars, t_simpleCommand *cur_command)
 {
 	if (ft_strcmp(com, "echo\0") == 0)
 		return (ft_echo((cur_command->arguments)));
@@ -93,9 +93,9 @@ int	build_in(
 	else if (ft_strcmp(com, "export\0") == 0)
 		return (ft_export(vars, cur_command));
 	else if (ft_strcmp(com, "unset\0") == 0)
-		return (ft_unset(args, vars, cur_command));
+		return (ft_unset(vars, cur_command));
 	else if (ft_strcmp(com, "env\0") == 0)
-		return (ft_env(vars, cur_command));
+		return (ft_env(vars));
 	else if (ft_strcmp(com, "exit\0") == 0)
 		return (0);
 	return (0);

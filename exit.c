@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	clean_vars(t_env_var *vars)
+void	clean_vars(t_env_var *vars)
 {
 	int	i;
 
@@ -13,7 +13,7 @@ int	clean_vars(t_env_var *vars)
 	free(vars->path);
 }
 
-int	ft_clean(t_command *command, t_env_var *vars)
+void	ft_clean(t_command *command, t_env_var *vars)
 {
 	int	i;
 	int	j;
@@ -39,7 +39,7 @@ int	ft_clean(t_command *command, t_env_var *vars)
 	clean_vars(vars);
 }
 
-int	last_clean(t_command *args, t_env_var *vars)
+void	last_clean(t_env_var *vars)
 {
 	int	i;
 

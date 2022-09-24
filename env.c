@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	ft_env(t_env_var *vars, t_simpleCommand *cur_command)
+int	ft_env(t_env_var *vars)
 {
 	int	i;
 

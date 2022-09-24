@@ -20,6 +20,7 @@ void	pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
+	(cur_command->db_fd);
 }
 
 void	do_update_target(char **redirect, char *readline_res)

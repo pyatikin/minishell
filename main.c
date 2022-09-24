@@ -69,7 +69,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		input_loop(&args, &vars, tmp);
 		rl_clear_history();
-		last_clean(&args, &vars);
+		last_clean(&vars);
 		echo_ctl(1, 0);
 		return (0);
 	}
