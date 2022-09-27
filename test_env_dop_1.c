@@ -20,8 +20,9 @@ int	do_db_redirections(t_command *args, int i)
 	return (0);
 }
 
-int	get_db_redirections(t_command *args, int i)
+int	get_db_redirections(t_command *args, int i, t_env_var *vars)
 {
+	do_redirections(args, i, vars);
 	if (i > 0 && args->simple_commands[i - 1]->out_file == NULL && \
 		args->simple_commands[i]->in_file == NULL)
 	{
@@ -95,8 +96,8 @@ int	build_in(
 	else if (ft_strcmp(com, "unset\0") == 0)
 		return (ft_unset(vars, cur_command));
 	else if (ft_strcmp(com, "env\0") == 0)
-		return (ft_env(vars));
+		return (ft_env(vars, cur_command));
 	else if (ft_strcmp(com, "exit\0") == 0)
-		return (0);
+		return (ft_exit(vars, cur_command));
 	return (0);
 }

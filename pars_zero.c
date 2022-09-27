@@ -37,6 +37,7 @@ t_simpleCommand	*zero_struk_simple(void)
 	simple->out_file = NULL;
 	simple->in_file = NULL;
 	simple->arguments = NULL;
+	simple->extra_fd = -1;
 	return (simple);
 }
 

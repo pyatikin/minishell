@@ -91,6 +91,8 @@ int	ft_cd(char **args, t_env_var *env)
 {
 	int		cd_ret;
 
+	if (check_args_cd(args, env))
+		return (0);
 	cd_ret = 0;
 	if (args[1] == NULL)
 		return (go_to_path(0, env));

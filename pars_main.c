@@ -20,7 +20,6 @@ t_command	*parsbody(char *pipe_line, t_env_var *vars)
 	command->simple_commands[command->number_of_simple_commands] = NULL;
 	pl = ft_strdup(pipe_line);
 	ft_pars_simple(&pl, command);
-	//ft_show(command);
 	return (command);
 }
 

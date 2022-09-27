@@ -10,7 +10,7 @@ SRCS = main.c ft_strlen.c check_cmd.c print_error.c spaces_dop.c\
 		echo.c pwd.c pars_dollar.c pars_file.c \
 		pars_zero.c pars_main.c pars_flags_alock.c pars_quotes_1.c \
 		pars_quotes_2.c clean.c pars_dollar_dop.c \
-		pars_file_dop.c pars_flag_alloc_dop.c ft_calloc.c ft_itoa.c \
+		pars_file_dop.c pars_flag_alloc_dop.c ft_calloc.c ft_itoa.c ft_atoi.c\
 		ft_isalpha.c ft_isdigit.c
 		
 		
@@ -18,8 +18,10 @@ SRCS = main.c ft_strlen.c check_cmd.c print_error.c spaces_dop.c\
 OBJS = $(SRCS:%.c=%.o)
 
 CC = cc
-CFLAGS = -lncurses -lpthread -pthread 
+CFLAGS = -lncurses -lpthread -pthread -Wall -Wextra -Werror
 CLIBFLAGS = 
+
+HEADERS = minishell.h libft.h enums.h error_msgs.h
 
 CL_BOLD	 = \e[1m
 CL_DIM	= \e[2m
@@ -54,11 +56,11 @@ re : fclean all
 $(OBJ_DIR) :
 	@mkdir $(OBJ_DIR)
 
-%.o : %.c 
+%.o : %.c $(HEADERS)
 	@$(CC) $(CFLAGS) -c $< -o $@ -lreadline
 	@printf "$(LF)$(FG_TEXT)Create $(FG_TEXT_PRIMARY)$@ $(FG_TEXT)from $(FG_TEXT_PRIMARY)$<"
 
-$(NAME) : $(HEADERS) $(OBJS) Makefile
+$(NAME) : $(HEADERS) $(OBJS) Makefile 
 	@printf "$(LF)$(FG_TEXT)Successfully Created $(FG_TEXT_PRIMARY)$@ Object files$(FG_TEXT) !\n"
 	@printf "$(FG_TEXT)Create $(FG_TEXT_PRIMARY)$@$(FG_TEXT) !\n"
 	@$(CC) $(CFLAGS)  $(OBJS) -o $@ -lreadline

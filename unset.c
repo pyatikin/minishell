@@ -28,13 +28,17 @@ void	find_and_del(t_env_var *vars, char *del)
 
 int	ft_unset(t_env_var *vars, t_simpleCommand *cur_command)
 {
-	if (cur_command->number_of_arguments != 2)
+	int	i;
+
+	i = 0;
+	vars->status = 0;
+	if (cur_command->number_of_arguments == 1)
 		return (0);
-	else if (cur_command->number_of_arguments == 2)
+	while (cur_command->number_of_arguments > ++i)
 	{
-		if (find_env(vars->env, cur_command->arguments[1]) == -1)
-			return (0);
-		find_and_del(vars, cur_command->arguments[1]);
+		if (find_env(vars->env, cur_command->arguments[i]) == -1)
+			continue ;
+		find_and_del(vars, cur_command->arguments[i]);
 	}
 	return (0);
 }

@@ -36,6 +36,18 @@ int	ft_flags(char *pipe_line, int flag, int i)
 	return (flag);
 }
 
+void	ft_clc_dop(int flag, char *pipe_line, int *i, int *k)
+{
+	if ((pipe_line[*i] == '>' || pipe_line[*i] == '<') && flag == 0)
+	{
+		(*k)--;
+		if (pipe_line[(*i) + 1] && pipe_line[*i] == pipe_line[(*i) + 1])
+			(*i)++;
+		if (pipe_line[(*i) + 1] && pipe_line[(*i) + 1] == ' ')
+			(*k)--;
+	}
+}
+
 int	ft_chek_leng_com(char *pipe_line)
 {
 	int	i;
@@ -45,17 +57,11 @@ int	ft_chek_leng_com(char *pipe_line)
 	i = 0;
 	k = 0;
 	flag = 0;
-	while (pipe_line[i] && pipe_line[i] != '|')
+	while (pipe_line[i] && (pipe_line[i] != '|' || \
+		(pipe_line[i] == '|' && flag != 0)))
 	{
 		flag = ft_flags(pipe_line, flag, i);
-		if ((pipe_line[i] == '>' || pipe_line[i] == '<') && flag == 0)
-		{
-			k--;
-			if (pipe_line[i + 1] && pipe_line[i] == pipe_line[i + 1])
-				i++;
-			if (pipe_line[i + 1] && pipe_line[i + 1] == ' ')
-				k--;
-		}
+		ft_clc_dop(flag, pipe_line, &i, &k);
 		if (pipe_line[i] != ' ' && flag == 0)
 		{
 			while (pipe_line[i] && pipe_line[i] != ' ' && pipe_line[i] != '|')
@@ -66,23 +72,6 @@ int	ft_chek_leng_com(char *pipe_line)
 			i++;
 	}
 	return (k);
-}
-
-int	ft_alloc_for_pattern(int n, char *pipe_line, t_command *command)
-{
-	int	j;
-	int	i;
-
-	j = 0;
-	i = 0;
-	if (n == 0)
-	{
-		while (pipe_line[j] && pipe_line[j] != ' ' && pipe_line[j] \
-			!= '|' && pipe_line[j] != '>' && pipe_line[j] != '<')
-			j++;
-	}
-	ft_alloc_dup(n, &pipe_line, &j, command);
-	return (j);
 }
 
 void	ft_copy_pipe(char **pipe_line, t_command *command, int i, int k)

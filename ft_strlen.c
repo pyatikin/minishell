@@ -25,11 +25,13 @@ The strlen function calculates the number of characters in a string before the
 first occurrence end-of-line character. In this case, the end-of-line character
 is not included in the counted characters.
 */
-size_t	ft_strlen(const char *str)
+int	ft_strlen(const char *str)
 {
 	size_t	res;
 
 	res = 0;
+	if (str == NULL)
+		return (0);
 	while (str[res] != '\0')
 	{
 		res++;

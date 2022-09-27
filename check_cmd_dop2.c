@@ -25,14 +25,20 @@ int	pipes_and_redirects(char *cmd)
 	return (unsuccess);
 }
 
-int	check_cmd(char *cmd)
+int	check_cmd(char **cmd)
 {
 	int			res;
 
-	if (pipes_and_redirects(cmd) == unsuccess)
+	if (pipes_and_redirects(*cmd) == unsuccess)
+	{
+		free(*cmd);
 		return (-1);
-	res = check_cmd_sequenses(cmd);
+	}
+	res = check_cmd_sequenses(*cmd);
 	if (!res)
+	{
+		free(*cmd);
 		return (2);
+	}
 	return (0);
 }

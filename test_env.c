@@ -89,6 +89,7 @@ char	*check_exec(char *dir, char *cmd)
 int	start_path(t_env_var *vars)
 {
 	vars->status = 0;
+	vars->exit = 0;
 	if (find_env(vars->env, "PATH") != -1)
 	{
 		vars->path = malloc(sizeof(char *) * \

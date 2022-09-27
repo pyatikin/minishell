@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include "libft.h"
 #include "error_msgs.h"
 #include "minishell.h"
@@ -11,7 +12,8 @@ int	check_g_interrupt(void)
 	return (0);
 }
 
-void	pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
+void	pipe_for_read_input(char *redirect, t_command *args, \
+								int i, t_env_var *vars)
 {
 	int	fd[2];
 
@@ -20,7 +22,21 @@ void	pipe_for_read_input(char *redirect, t_simpleCommand *cur_command)
 	close(fd[1]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
-	(cur_command->db_fd);
+	if (args->simple_commands[i]->out_file_type != 0 || \
+		args->number_of_simple_commands == i + 1)
+	{
+		if (args->simple_commands[i]->out_file_type == 1)
+			args->simple_commands[i]->out_fd = open(args->\
+			simple_commands[i]->out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (args->simple_commands[i]->out_file_type == 2)
+			args->simple_commands[i]->out_fd = open(args->\
+			simple_commands[i]->out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			args->simple_commands[i]->out_fd = vars->stdout_fd;
+		dup2(args->simple_commands[i]->out_fd, STDOUT_FILENO);
+		if (args->simple_commands[i]->out_fd != vars->stdout_fd)
+			close(args->simple_commands[i]->out_fd);
+	}
 }
 
 void	do_update_target(char **redirect, char *readline_res)
@@ -35,7 +51,7 @@ void	do_update_target(char **redirect, char *readline_res)
 	free(res);
 }
 
-void	do_read_input(char *target, t_simpleCommand *cur_command)
+void	do_read_input(char *target, t_command *args, int i, t_env_var *vars)
 {
 	char	*readline_res;
 	char	*redirect;
@@ -56,7 +72,7 @@ void	do_read_input(char *target, t_simpleCommand *cur_command)
 		readline_res = NULL;
 	}
 	rl_event_hook = NULL;
-	pipe_for_read_input(redirect, cur_command);
+	pipe_for_read_input(redirect, args, i, vars);
 	free(target);
 	free(readline_res);
 	free(redirect);

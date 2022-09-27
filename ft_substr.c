@@ -27,7 +27,7 @@ The function copies a substring from the original string s starting at index
 start and length at most len. On success, returns a pointer to the copied
 substring.
 */
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+char	*ft_substr(const char *s, int start, int len)
 {
 	char	*subs;
 

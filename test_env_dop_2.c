@@ -12,12 +12,6 @@ int	check_command_extra(t_simpleCommand *cur_command,
 		t_env_var *vars, char **com)
 {
 	*com = cur_command->arguments[0];
-	if (cur_command->in_file_type == read_input)
-	{
-		set_signals(3, 1, vars);
-		do_read_input(ft_strdup(cur_command->in_file), cur_command);
-		set_signals(1, 0, vars);
-	}
 	if (ft_strcmp(*com, "echo\0") == 0 || ft_strcmp(*com, "cd\0") == 0 || \
 	ft_strcmp(*com, "pwd\0") == 0 || ft_strcmp(*com, "export\0") == 0 || \
 	ft_strcmp(*com, "unset\0") == 0 || ft_strcmp(*com, "env\0") == 0 || \
@@ -81,9 +75,16 @@ int	exec_loop(t_command *args, t_env_var *vars)
 	i = 0;
 	while (i < args->number_of_simple_commands)
 	{
-		do_redirections(args, i, vars);
+		if (args->simple_commands[i]->in_file_type == read_input)
+		{
+			set_signals(3, 1, vars);
+			do_read_input(ft_strdup(args->simple_commands[i]->in_file), \
+				args, i, vars);
+			set_signals(1, 0, vars);
+		}
+		else
+			get_db_redirections(args, i, vars);
 		do_db_redirections(args, i);
-		get_db_redirections(args, i);
 		check_command(args->simple_commands[i], vars);
 		back_redirections(vars);
 		if (vars->status)

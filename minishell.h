@@ -32,6 +32,7 @@ typedef struct s_simpleCommand
 	int		in_file_type;
 	int		in_fd;
 	int		db_fd[2];
+	int		extra_fd;
 }	t_simpleCommand;
 
 typedef struct s_command
@@ -48,11 +49,12 @@ typedef struct s_command
 
 typedef struct s_env_var
 {
-	char	**env;
-	char	**path;
-	int		stdin_fd;
-	int		stdout_fd;
-	int		status;
+	char			**env;
+	char			**path;
+	int				stdin_fd;
+	int				stdout_fd;
+	int				status;
+	unsigned char	exit;
 }	t_env_var;
 
 int				args_size(char **args);
@@ -114,7 +116,7 @@ int				build_in(char *com, t_env_var *vars, \
 					t_simpleCommand *cur_command);
 int				execute_command(char *tmp, char **arg, t_env_var *vars);
 int				do_redirections(t_command *args, int i, t_env_var *vars);
-int				get_db_redirections(t_command *args, int i);
+int				get_db_redirections(t_command *args, int i, t_env_var *vars);
 int				do_db_redirections(t_command *args, int i);
 int				count_colomns(char *s);
 char			*check_exec(char *dir, char *cmd);
@@ -124,7 +126,7 @@ char			*get_env_value(char *env);
 char			*ft_strdup(const char *s1);
 int				ft_strcmp(const char *s1, const char *s2);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
-size_t			ft_strlen(const char *s);
+int				ft_strlen(const char *s);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);
 int				ft_isalnum(int c);
@@ -132,21 +134,22 @@ void			no_handler(int s);
 
 void			set_signals(int handler, int ctl, t_env_var *vars);
 int				escaped(char *cmd, int i);
-int				check_cmd(char *cmd);
+int				check_cmd(char **cmd);
 int				print_err(char *main, char	*word, char ch);
 char			*ft_chng_line(char **cmd);
 int				start_path(t_env_var *vars);
-int				ft_env(t_env_var *vars);
+int				ft_env(t_env_var *vars, t_simpleCommand *cur_command);
 int				ft_export(t_env_var *vars, t_simpleCommand *cur_command);
 void			ft_clean(t_command *args, t_env_var *vars);
 int				exec_loop(t_command *args, t_env_var *vars);
-void				last_clean(t_env_var *vars);
+void			last_clean(t_env_var *vars);
 int				ft_unset(t_env_var *vars, \
 					t_simpleCommand *cur_command);
 void			add_new_env(t_env_var *vars, char *new);
 int				ft_cd(char **args, t_env_var *env);
 void			ft_putendl_fd(const char *s, int fd);
-void			do_read_input(char *target, t_simpleCommand *cur_command);
+void			do_read_input(char *target, t_command *args, int i, \
+				t_env_var *vars);
 void			find_and_del(t_env_var *vars, char *del);
 void			echo_ctl(char on, int fd);
 void			ft_z_p_a_r(int *i, int *f, int *count, char *redirect_type);
@@ -155,4 +158,6 @@ int				check_cmd_sequenses(char *cmd);
 int				find_equal(char *s);
 int				print_export(t_env_var *var);
 void			free_pointers(char ***tmp, int **len);
+int				check_args_cd(char **args, t_env_var *env);
+int				ft_exit(t_env_var *vars, t_simpleCommand *cur_command);
 #endif
